@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>College Journal</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -151,12 +151,83 @@ button:disabled {opacity:.5;cursor:not-allowed}
 .absence-item {
   border-left:3px solid var(--red);
 }
+
+/* Кнопки посещаемости */
+.attendance-row {
+  display:flex;
+  flex-wrap:nowrap !important;
+  align-items:center !important;
+  justify-content:space-between;
+  gap:10px;
+}
+.attendance-name {
+  flex:1;
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.attendance-controls {
+  display:flex;
+  gap:7px;
+  flex-shrink:0;
+}
+.mark-btn {
+  width:39px;
+  height:39px;
+  min-width:39px;
+  padding:0;
+  border:2px solid var(--border);
+  border-radius:9px;
+  background:var(--panel2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+  font-weight:bold;
+  transition:background .15s,transform .15s;
+}
+.mark-btn.present-btn.active {
+  background:var(--green);
+  border-color:var(--green);
+  color:#101116;
+}
+.mark-btn.absent-btn.active {
+  background:var(--red);
+  border-color:var(--red);
+  color:white;
+}
+.mark-btn:active {transform:scale(.93)}
+.export-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  margin:16px 0;
+}
+.export-card h3 {margin-top:0}
+.export-card button {width:100%;margin-top:5px}
+.export-fields {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.export-fields>div {min-width:0}
+.export-note {
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+  margin:5px 0 12px;
+}
 @media(max-width:550px) {
   main {padding:14px}
-  .item {align-items:flex-start;flex-wrap:wrap}
+  .item:not(.attendance-row) {
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
   .cards {grid-template-columns:repeat(2,minmax(0,1fr))}
   .filters {grid-template-columns:1fr}
   header {padding:15px}
+  .export-fields {grid-template-columns:1fr}
+  .mark-btn {width:37px;height:37px;min-width:37px}
 }
 </style>
 </head>
@@ -204,8 +275,8 @@ button:disabled {opacity:.5;cursor:not-allowed}
 // 1. SUPABASE
 // ==========================================
 
-const SUPABASE_URL = "https://nbwczdazkikduxzgarvb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_7ARoVY3d5W1GgT9a9eVLbQ_G_IP_UwF";
+const SUPABASE_URL = "";
+const SUPABASE_KEY = "";
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
@@ -271,6 +342,13 @@ ru: {
   presenceHistory:"История посещений",
   subjectStats:"Статистика по предметам",
   export:"Экспорт в Excel (.xlsx)",
+  exportSubject:"Экспорт посещаемости в Excel",
+  exportMonth:"Скачать за месяц",
+  exportAll:"Скачать за всё время",
+  exportPeriod:"Скачать за выбранный период",
+  exportTitle:"Экспорт посещаемости",
+  selectMonth:"Выбери месяц",
+  customPeriod:"Произвольный период",
   noHistory:"Занятий по выбранным фильтрам нет.",
   noStudents:"Сначала добавь учеников.",
   noSubjects:"Сначала добавь предмет.",
@@ -298,7 +376,19 @@ ru: {
   backToStats:"← К статистике ученика",
   noAbsences:"У этого ученика нет пропусков.",
   absenceNumber:"Пропуск №",
-  allDates:"Все даты"
+  allDates:"Все даты",
+  dateRange:"Период",
+  monthInfo:"Будут включены все занятия за выбранный календарный месяц.",
+  allInfo:"Будут включены все занятия по этому предмету.",
+  customInfo:"Укажи начальную и конечную даты.",
+  noLessonsPeriod:"За выбранный период занятий нет.",
+  invalidPeriod:"Начальная дата не может быть позже конечной.",
+  detailsSheet:"Посещаемость",
+  summarySheet:"Сводка",
+  totalPresent:"Присутствий",
+  totalAbsent:"Пропусков",
+  totalUnmarked:"Не отмечено",
+  exportSuccess:"Файл Excel сформирован."
 },
 ro: {
   subtitle:"Jurnal electronic personal de prezență",
@@ -354,6 +444,13 @@ ro: {
   presenceHistory:"Istoricul prezențelor",
   subjectStats:"Statistici pe discipline",
   export:"Exportă în Excel (.xlsx)",
+  exportSubject:"Exportă prezența în Excel",
+  exportMonth:"Descarcă pentru o lună",
+  exportAll:"Descarcă pentru toată perioada",
+  exportPeriod:"Descarcă perioada selectată",
+  exportTitle:"Exportul prezenței",
+  selectMonth:"Alege luna",
+  customPeriod:"Perioadă personalizată",
   noHistory:"Nu există lecții pentru filtrele selectate.",
   noStudents:"Adaugă mai întâi elevi.",
   noSubjects:"Adaugă mai întâi o disciplină.",
@@ -381,7 +478,19 @@ ro: {
   backToStats:"← Înapoi la statistici",
   noAbsences:"Acest elev nu are absențe.",
   absenceNumber:"Absența nr.",
-  allDates:"Toate datele"
+  allDates:"Toate datele",
+  dateRange:"Perioadă",
+  monthInfo:"Vor fi incluse toate lecțiile din luna calendaristică selectată.",
+  allInfo:"Vor fi incluse toate lecțiile acestei discipline.",
+  customInfo:"Alege data de început și data de sfârșit.",
+  noLessonsPeriod:"Nu există lecții în perioada selectată.",
+  invalidPeriod:"Data de început nu poate fi după data de sfârșit.",
+  detailsSheet:"Prezență",
+  summarySheet:"Rezumat",
+  totalPresent:"Prezențe",
+  totalAbsent:"Absențe",
+  totalUnmarked:"Nemarcate",
+  exportSuccess:"Fișierul Excel a fost creat."
 }
 };
 
@@ -736,7 +845,11 @@ async function changeDate(value) {
       .update({lesson_date:value}).eq("id",selectedLesson);
 
     if (error) throw error;
-    await loadData();
+
+    const lesson=data.lessons.find(l=>l.id===selectedLesson);
+    if (lesson) lesson.lesson_date=value;
+
+    render();
   });
 }
 
@@ -762,24 +875,75 @@ async function deleteLesson(id) {
 // ==========================================
 
 async function setAttendance(studentId,value) {
+  if (busy || !selectedLesson) return;
+
+  const current=data.attendance[selectedLesson]?.[studentId];
+
+  // Повторное нажатие снимает отметку
+  const newValue=
+    (value==="present" && current===true) ||
+    (value==="absent" && current===false)
+      ? "none"
+      : value;
+
   await run(async()=>{
-    if (value==="none") {
+
+    if (newValue==="none") {
       const {error}=await db.from("attendance")
         .delete()
         .eq("lesson_id",selectedLesson)
         .eq("student_id",studentId);
+
       if (error) throw error;
+
+      if (data.attendance[selectedLesson]) {
+        delete data.attendance[selectedLesson][studentId];
+      }
+
     } else {
       const {error}=await db.from("attendance")
         .upsert({
           lesson_id:selectedLesson,
           student_id:studentId,
-          is_present:value==="present"
+          is_present:newValue==="present"
         },{onConflict:"lesson_id,student_id"});
+
       if (error) throw error;
+
+      if (!data.attendance[selectedLesson]) {
+        data.attendance[selectedLesson]={};
+      }
+
+      data.attendance[selectedLesson][studentId]=
+        newValue==="present";
     }
 
-    await loadData();
+    // Обновляем только строку ученика.
+    // Вся страница остаётся на месте.
+    const row=document.getElementById(
+      "attendance-row-"+studentId
+    );
+
+    if (row) {
+      const mark=data.attendance[selectedLesson]?.[studentId];
+
+      const presentButton=row.querySelector(".present-btn");
+      const absentButton=row.querySelector(".absent-btn");
+      const status=row.querySelector(".attendance-status");
+
+      presentButton.classList.toggle("active",mark===true);
+      absentButton.classList.toggle("active",mark===false);
+
+      status.textContent=
+        mark===true ? t("present") :
+        mark===false ? t("absent") :
+        t("unmarked");
+
+      status.className=
+        "small attendance-status "+
+        (mark===true?"present":
+         mark===false?"absent":"");
+    }
   });
 }
 
@@ -903,7 +1067,7 @@ function filteredLessons() {
 }
 
 // ==========================================
-// 13. EXCEL
+// 13. EXCEL — ПЕРСОНАЛЬНЫЙ ЭКСПОРТ
 // ==========================================
 
 function exportExcel() {
@@ -952,7 +1116,177 @@ function exportExcel() {
 }
 
 // ==========================================
-// 14. ОТОБРАЖЕНИЕ СТРАНИЦ
+// 14. EXCEL — ЭКСПОРТ ПО ПРЕДМЕТУ
+// ==========================================
+
+function exportSubjectExcel(subjectId,mode) {
+  if (typeof XLSX==="undefined") {
+    notify(t("error")+": Excel library is not loaded.");
+    return;
+  }
+
+  const subject=data.subjects.find(s=>s.id===subjectId);
+  if (!subject) return;
+
+  let from="";
+  let to="";
+  let periodName="all";
+
+  if (mode==="month") {
+    const month=document.getElementById("subjectExportMonth")?.value;
+
+    if (!month) {
+      notify(t("selectMonth"));
+      return;
+    }
+
+    from=month+"-01";
+
+    const [year,monthNumber]=month.split("-").map(Number);
+    const lastDay=new Date(year,monthNumber,0).getDate();
+
+    to=month+"-"+String(lastDay).padStart(2,"0");
+    periodName=month;
+
+  } else if (mode==="custom") {
+    from=document.getElementById("subjectExportFrom")?.value || "";
+    to=document.getElementById("subjectExportTo")?.value || "";
+
+    if (!from || !to) {
+      notify(t("customInfo"));
+      return;
+    }
+
+    if (from>to) {
+      notify(t("invalidPeriod"));
+      return;
+    }
+
+    periodName=from+"_to_"+to;
+  }
+
+  const lessons=data.lessons
+    .filter(l=>{
+      if (l.subject_id!==subjectId) return false;
+      if (from && l.lesson_date<from) return false;
+      if (to && l.lesson_date>to) return false;
+      return true;
+    })
+    .slice()
+    .sort((a,b)=>
+      a.lesson_date.localeCompare(b.lesson_date) ||
+      a.lesson_number-b.lesson_number
+    );
+
+  if (!lessons.length) {
+    notify(t("noLessonsPeriod"));
+    return;
+  }
+
+  const detailsRows=[[
+    t("subject"),
+    t("number"),
+    t("date"),
+    t("student"),
+    t("attendance")
+  ]];
+
+  const summaryRows=[[
+    t("student"),
+    t("totalLessons"),
+    t("totalPresent"),
+    t("totalAbsent"),
+    t("totalUnmarked"),
+    t("percent")
+  ]];
+
+  data.students.forEach(student=>{
+    let present=0;
+    let absent=0;
+    let unmarked=0;
+
+    lessons.forEach(lesson=>{
+      const mark=data.attendance[lesson.id]?.[student.id];
+
+      let status;
+
+      if (mark===true) {
+        present++;
+        status=t("excelPresent");
+      } else if (mark===false) {
+        absent++;
+        status=t("excelAbsent");
+      } else {
+        unmarked++;
+        status=t("excelNone");
+      }
+
+      detailsRows.push([
+        subject.name,
+        lesson.lesson_number,
+        lesson.lesson_date,
+        student.full_name,
+        status
+      ]);
+    });
+
+    const percent=(present+absent)
+      ? Math.round(present/(present+absent)*100)
+      : 0;
+
+    summaryRows.push([
+      student.full_name,
+      lessons.length,
+      present,
+      absent,
+      unmarked,
+      percent+"%"
+    ]);
+  });
+
+  const workbook=XLSX.utils.book_new();
+
+  const detailsSheet=XLSX.utils.aoa_to_sheet(detailsRows);
+  detailsSheet["!cols"]=[
+    {wch:25},
+    {wch:14},
+    {wch:16},
+    {wch:25},
+    {wch:20}
+  ];
+
+  const summarySheet=XLSX.utils.aoa_to_sheet(summaryRows);
+  summarySheet["!cols"]=[
+    {wch:25},
+    {wch:17},
+    {wch:17},
+    {wch:17},
+    {wch:17},
+    {wch:17}
+  ];
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    detailsSheet,
+    t("detailsSheet")
+  );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    summarySheet,
+    t("summarySheet")
+  );
+
+  const filename=subject.name.replace(/[^\p{L}\p{N}-]/gu,"_");
+
+  XLSX.writeFile(
+    workbook,
+    "College-Journal-"+filename+"-"+periodName+".xlsx"
+  );
+}
+
+// ==========================================
+// 15. ОТОБРАЖЕНИЕ СТРАНИЦ
 // ==========================================
 
 function render() {
@@ -1072,7 +1406,12 @@ function render() {
 
     const lessons=data.lessons.filter(
       l=>l.subject_id===selectedSubject
-    ).sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date));
+    ).sort((a,b)=>
+      b.lesson_date.localeCompare(a.lesson_date) ||
+      b.lesson_number-a.lesson_number
+    );
+
+    const currentMonth=localDate().slice(0,7);
 
     app.innerHTML=`
       ${button(t("back"),"go('subjects')")}
@@ -1085,6 +1424,54 @@ function render() {
 
       <div class="actions">
         ${button(t("addLesson"),"addLesson()",true)}
+      </div>
+
+      <div class="export-card">
+        <h3>📥 ${t("exportTitle")}</h3>
+
+        <label>${t("selectMonth")}</label>
+        <input
+          id="subjectExportMonth"
+          type="month"
+          value="${currentMonth}"
+        >
+
+        <p class="export-note">${t("monthInfo")}</p>
+
+        <button class="primary"
+          onclick="exportSubjectExcel('${subject.id}','month')">
+          📅 ${t("exportMonth")}
+        </button>
+
+        <div style="height:14px"></div>
+
+        <button
+          onclick="exportSubjectExcel('${subject.id}','all')">
+          📚 ${t("exportAll")}
+        </button>
+
+        <div style="height:18px"></div>
+
+        <h3>${t("customPeriod")}</h3>
+
+        <div class="export-fields">
+          <div>
+            <label>${t("from")}</label>
+            <input id="subjectExportFrom" type="date">
+          </div>
+
+          <div>
+            <label>${t("to")}</label>
+            <input id="subjectExportTo" type="date">
+          </div>
+        </div>
+
+        <p class="export-note">${t("customInfo")}</p>
+
+        <button class="primary"
+          onclick="exportSubjectExcel('${subject.id}','custom')">
+          📥 ${t("exportPeriod")}
+        </button>
       </div>
 
       <h3>${t("history")}</h3>
@@ -1235,7 +1622,7 @@ function render() {
 }
 
 // ==========================================
-// 15. ВЫБОР УЧЕНИКА И СТАТИСТИКА
+// 16. ВЫБОР УЧЕНИКА И СТАТИСТИКА
 // ==========================================
 
 function selectStudent(id) {
@@ -1349,7 +1736,7 @@ function openAbsences() {
 }
 
 // ==========================================
-// 16. ОКНО ЗАНЯТИЯ
+// 17. ОКНО ЗАНЯТИЯ
 // ==========================================
 
 function lessonView() {
@@ -1386,27 +1773,43 @@ function lessonView() {
           mark===false ? t("absent") : t("unmarked");
 
         return `
-          <div class="item">
-            <span>
-              ${i+1}. ${safe(s.full_name)}
-              <div class="small ${
+          <div class="item attendance-row"
+               id="attendance-row-${s.id}">
+
+            <div class="attendance-name">
+              <b>${i+1}. ${safe(s.full_name)}</b>
+
+              <div class="small attendance-status ${
                 mark===true?"present":
                 mark===false?"absent":""
               }">${label}</div>
-            </span>
+            </div>
 
-            <select style="width:145px;margin:0"
-              onchange="setAttendance('${s.id}',this.value)">
-              <option value="none" ${mark===undefined?"selected":""}>
-                ${t("unmarked")}
-              </option>
-              <option value="present" ${mark===true?"selected":""}>
-                ${t("was")}
-              </option>
-              <option value="absent" ${mark===false?"selected":""}>
-                ${t("wasNot")}
-              </option>
-            </select>
+            <div class="attendance-controls">
+
+              <button
+                type="button"
+                class="mark-btn present-btn ${
+                  mark===true?"active":""
+                }"
+                title="${t("present")}"
+                aria-label="${t("present")}"
+                onclick="setAttendance('${s.id}','present')">
+                ✓
+              </button>
+
+              <button
+                type="button"
+                class="mark-btn absent-btn ${
+                  mark===false?"active":""
+                }"
+                title="${t("absent")}"
+                aria-label="${t("absent")}"
+                onclick="setAttendance('${s.id}','absent')">
+                ✕
+              </button>
+
+            </div>
           </div>
         `;
       }).join("") || `<p class="muted">${t("noStudents")}</p>`}
@@ -1415,7 +1818,7 @@ function lessonView() {
 }
 
 // ==========================================
-// 17. ЗАПУСК
+// 18. ЗАПУСК
 // ==========================================
 
 document.querySelectorAll("nav button[data-page]").forEach(b=>{
@@ -1442,4 +1845,3 @@ checkAuth();
 </script>
 </body>
 </html>
-```
