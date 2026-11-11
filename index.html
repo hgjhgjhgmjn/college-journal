@@ -1,199 +1,59 @@
-
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101116">
 <title>College Journal</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-<style>
-:root {
-  --bg:#101116;
-  --panel:#191b24;
-  --panel2:#222531;
-  --text:#f2f2f7;
-  --muted:#9295a5;
-  --accent:#8b7cf6;
-  --green:#35c98a;
-  --red:#ed6577;
-  --border:#303341;
-}
-* {box-sizing:border-box}
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,sans-serif;
-}
-header {
-  padding:18px 22px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-header h1 {margin:0;font-size:23px}
-header p {color:var(--muted);margin:5px 0 0}
-nav {
-  display:flex;
-  gap:8px;
-  padding:12px;
-  overflow-x:auto;
-  background:var(--panel);
-}
-button {
-  border:0;
-  border-radius:10px;
-  padding:11px 15px;
-  background:var(--panel2);
-  color:var(--text);
-  cursor:pointer;
-  white-space:nowrap;
-}
-nav button.active,.primary {
-  background:var(--accent);
-  color:white;
-}
-main {max-width:950px;margin:auto;padding:20px}
-h2 {font-size:21px}
-h3 {font-size:17px}
-.muted,.small {color:var(--muted)}
-.small {font-size:12px}
-.cards {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-.card,.item {
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px;
-  margin-bottom:12px;
-}
-.card strong {
-  font-size:27px;
-  display:block;
-  margin:7px 0;
-}
-.item {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-.actions {
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin:15px 0;
-}
-input,select {
-  background:var(--panel2);
-  border:1px solid var(--border);
-  color:white;
-  padding:12px;
-  border-radius:9px;
-  width:100%;
-  margin:7px 0 12px;
-}
-label {color:var(--muted);font-size:13px}
-.present {color:var(--green)}
-.absent {color:var(--red)}
-.progress {
-  height:9px;
-  background:var(--panel2);
-  border-radius:10px;
-  overflow:hidden;
-  margin:10px 0;
-}
-.progress div {
-  height:100%;
-  background:var(--green);
-}
-.hidden {display:none}
-.auth {
-  max-width:400px;
-  margin:50px auto;
-  padding:22px;
-  background:var(--panel);
-  border-radius:16px;
-  border:1px solid var(--border);
-}
-.notice {
-  background:var(--panel2);
-  padding:12px;
-  border-radius:10px;
-  margin:12px 0;
-}
-button:disabled {opacity:.5;cursor:not-allowed}
-.filters {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-}
-.language {
-  width:auto;
-  margin:0;
-  padding:9px;
-}
-.stat-line {
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:9px 0;
-  border-bottom:1px solid var(--border);
-}
-.absence-item {
-  border-left:3px solid var(--red);
-}
-@media(max-width:550px) {
-  main {padding:14px}
-  .item {align-items:flex-start;flex-wrap:wrap}
-  .cards {grid-template-columns:repeat(2,minmax(0,1fr))}
-  .filters {grid-template-columns:1fr}
-  header {padding:15px}
-}
-</style>
-  
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#101116;--panel:#191b24;--panel2:#222531;--text:#f2f2f7;--muted:#9295a5;--accent:#8b7cf6;--green:#35c98a;--red:#ed6577;--border:#303341}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg)}
+body{margin:0;min-height:100vh;min-height:100dvh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}
+header h1{margin:0;font-size:22px}header p{color:var(--muted);margin:5px 0 0}
+nav{display:flex;gap:8px;padding:12px;overflow-x:auto;background:var(--panel);position:sticky;top:0;z-index:5}
+button{border:0;border-radius:10px;padding:11px 14px;background:var(--panel2);color:var(--text);cursor:pointer;white-space:nowrap;touch-action:manipulation}
+button:disabled{opacity:.5;cursor:not-allowed}
+nav button.active,.primary{background:var(--accent);color:white}
+main{max-width:950px;margin:auto;padding:18px}
+h2{font-size:21px}h3{font-size:17px}.muted,.small{color:var(--muted)}.small{font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card,.item{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:15px;margin-bottom:12px}
+.card strong{font-size:27px;display:block;margin:7px 0}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+input,select{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:12px;border-radius:9px;width:100%;margin:7px 0 12px}
+label{color:var(--muted);font-size:13px}.present{color:var(--green)}.absent{color:var(--red)}
+.progress{height:9px;background:var(--panel2);border-radius:10px;overflow:hidden;margin:10px 0}.progress div{height:100%;background:var(--green)}
+.hidden{display:none!important}.auth{max-width:400px;margin:45px auto;padding:22px;background:var(--panel);border-radius:16px;border:1px solid var(--border)}
+.notice{background:var(--panel2);padding:12px;border-radius:10px;margin:12px 0}
+.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.language{width:auto;margin:0;padding:9px}.header-actions{display:flex;gap:8px;align-items:center}
+.stat-line{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.absence-item{border-left:3px solid var(--red)}
+@media(max-width:550px){main{padding:13px}.item{align-items:flex-start;flex-wrap:wrap}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:1fr}header{padding:13px}header h1{font-size:19px}nav{padding:9px}nav button{padding:10px 12px}}
+</style>
 </head>
-  
-<script>
-if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-
-    tg.ready();
-    tg.expand();
-
-    console.log("College Journal: Telegram WebApp connected");
-}
-</script>
 <body>
-
 <header>
-  <div>
-    <h1>College Journal</h1>
-    <p id="subtitle"></p>
+  <div><h1>College Journal</h1><p id="subtitle"></p></div>
+  <div class="header-actions">
+    <button id="fullscreenButton" class="hidden" type="button" onclick="toggleFullscreen()" aria-label="Fullscreen">⛶</button>
+    <select id="language" class="language" onchange="setLanguage(this.value)" aria-label="Language">
+      <option value="ro">RO</option><option value="ru">RU</option>
+    </select>
   </div>
-  <select id="language" class="language" onchange="setLanguage(this.value)">
-    <option value="ru">RU</option>
-    <option value="ro">RO</option>
-  </select>
 </header>
 
 <div id="auth" class="auth hidden">
-  <h2 id="loginTitle"></h2>
-  <p class="muted" id="loginDescription"></p>
+  <h2 id="loginTitle"></h2><p class="muted" id="loginDescription"></p>
   <form onsubmit="login(event)">
-    <label>Email</label>
-    <input id="email" type="email" required>
-    <label id="passwordLabel"></label>
-    <input id="password" type="password" required>
+    <label>Email</label><input id="email" type="email" autocomplete="username" required>
+    <label id="passwordLabel"></label><input id="password" type="password" autocomplete="current-password" required>
     <button class="primary" type="submit" id="loginButton"></button>
   </form>
   <p id="authMessage" class="small"></p>
@@ -212,1246 +72,264 @@ if (window.Telegram && window.Telegram.WebApp) {
 </div>
 
 <script>
-// ==========================================
-// 1. SUPABASE
-// ==========================================
+"use strict";
 
+/* Păstrează aici valorile tale reale Supabase. Nu publica cheia secretă.
+   Pentru aplicația din browser se folosește cheia publishable/anon, niciodată service_role. */
 const SUPABASE_URL = "https://nbwczdazkikduxzgarvb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_7ARoVY3d5W1GgT9a9eVLbQ_G_IP_UwF";
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-// ==========================================
-// 2. ПЕРЕВОДЫ
-// ==========================================
-
-const translations = {
-ru: {
-  subtitle:"Личный электронный журнал посещаемости",
-  login:"Вход в журнал",
-  loginDescription:"Войди в свой личный аккаунт",
-  password:"Пароль",
-  enter:"Войти",
-  home:"Главная",
-  students:"Ученики",
-  subjects:"Предметы",
-  history:"История",
-  stats:"Статистика",
-  logout:"Выйти",
-  loading:"Загрузка данных...",
-  welcome:"Твой электронный журнал",
-  studentCount:"Учеников",
-  subjectCount:"Предметов",
-  lessonCount:"Проведено занятий",
-  latest:"Последние занятия",
-  addStudent:"+ Добавить ученика",
-  addSubject:"+ Добавить предмет",
-  addLesson:"+ Новое занятие",
-  edit:"Изменить",
-  delete:"Удалить",
-  open:"Открыть",
-  back:"← Назад",
-  emptyStudents:"Список учеников пуст.",
-  emptySubjects:"Предметов пока нет.",
-  emptyLessons:"Занятий пока нет.",
-  total:"Всего",
-  lessons:"Занятий",
-  date:"Дата занятия",
-  marks:"Отметки учеников",
-  present:"Присутствовал",
-  absent:"Отсутствовал",
-  unmarked:"Не отмечен",
-  was:"Был",
-  wasNot:"Не был",
-  student:"Ученик",
-  chooseStudent:"Выбери ученика",
-  chooseSubject:"Все предметы",
-  from:"Дата с",
-  to:"Дата по",
-  filter:"Фильтр",
-  reset:"Сбросить",
-  personalStats:"Персональная статистика",
-  attendance:"Посещаемость",
-  visits:"Присутствий",
-  absences:"Пропусков",
-  marked:"Отмечено занятий",
-  noMarks:"Для этого ученика пока нет отметок.",
-  absenceHistory:"История пропусков",
-  presenceHistory:"История посещений",
-  subjectStats:"Статистика по предметам",
-  export:"Экспорт в Excel (.xlsx)",
-  noHistory:"Занятий по выбранным фильтрам нет.",
-  noStudents:"Сначала добавь учеников.",
-  noSubjects:"Сначала добавь предмет.",
-  subject:"Предмет",
-  number:"Занятие №",
-  confirmStudent:"Удалить ученика и его отметки?",
-  confirmSubject:"Удалить предмет, все его занятия и отметки?",
-  confirmLesson:"Удалить занятие и все его отметки?",
-  enterStudent:"Введите имя и фамилию ученика:",
-  editStudent:"Изменить имя ученика:",
-  enterSubject:"Введите название предмета:",
-  editSubject:"Изменить название:",
-  excelPresent:"Присутствовал",
-  excelAbsent:"Отсутствовал",
-  excelNone:"Не отмечено",
-  error:"Ошибка",
-  loginWait:"Выполняется вход...",
-  wrongConfig:"Проверь настройки Supabase в коде.",
-  noStudentSelected:"Сначала выбери ученика.",
-  totalLessons:"Всего занятий",
-  percent:"Процент посещаемости",
-  selectedStudent:"Выбранный ученик",
-  viewAbsences:"Посмотреть пропуски",
-  absenceList:"Список пропусков",
-  backToStats:"← К статистике ученика",
-  noAbsences:"У этого ученика нет пропусков.",
-  absenceNumber:"Пропуск №",
-  allDates:"Все даты"
+const translations={
+ro:{
+ subtitle:"Jurnal electronic personal de prezență",login:"Autentificare",loginDescription:"Intră în contul tău personal",password:"Parolă",enter:"Intră",
+ home:"Acasă",students:"Elevi",subjects:"Discipline",history:"Istoric",stats:"Statistici",logout:"Ieșire",
+ loading:"Se încarcă datele...",welcome:"Jurnalul tău electronic",studentCount:"Elevi",subjectCount:"Discipline",lessonCount:"Lecții desfășurate",latest:"Ultimele lecții",
+ addStudent:"+ Adaugă elev",addSubject:"+ Adaugă disciplină",addLesson:"+ Lecție nouă",edit:"Modifică",delete:"Șterge",open:"Deschide",back:"← Înapoi",
+ emptyStudents:"Lista elevilor este goală.",emptySubjects:"Nu există discipline.",emptyLessons:"Nu există lecții.",total:"Total",lessons:"Lecții",date:"Data lecției",marks:"Prezența elevilor",
+ present:"Prezent",absent:"Absent",unmarked:"Nemarcat",was:"Prezent",wasNot:"Absent",student:"Elev",chooseStudent:"Alege elevul",chooseSubject:"Toate disciplinele",
+ from:"Data de la",to:"Data până la",filter:"Filtrează",reset:"Resetează",personalStats:"Statistici personale",attendance:"Prezență",visits:"Prezențe",absences:"Absențe",
+ marked:"Lecții marcate",noMarks:"Acest elev nu are încă marcaje.",absenceHistory:"Istoricul absențelor",presenceHistory:"Istoricul prezențelor",
+ subjectStats:"Statistici pe discipline",export:"Exportă în Excel (.xlsx)",noHistory:"Nu există lecții pentru filtrele selectate.",noStudents:"Adaugă mai întâi elevi.",
+ noSubjects:"Adaugă mai întâi o disciplină.",subject:"Disciplina",number:"Lecția nr.",confirmStudent:"Ștergi elevul și marcajele sale?",
+ confirmSubject:"Ștergi disciplina, lecțiile și marcajele?",confirmLesson:"Ștergi lecția și toate marcajele?",enterStudent:"Introdu numele și prenumele elevului:",
+ editStudent:"Modifică numele elevului:",enterSubject:"Introdu denumirea disciplinei:",editSubject:"Modifică denumirea:",
+ excelPresent:"Prezent",excelAbsent:"Absent",excelNone:"Nemarcat",error:"Eroare",loginWait:"Autentificare în curs...",
+ wrongConfig:"Completează URL-ul și cheia publicabilă Supabase în cod.",noStudentSelected:"Alege mai întâi un elev.",
+ percent:"Procentul de prezență",selectedStudent:"Elev selectat",viewAbsences:"Vezi absențele",absenceList:"Lista absențelor",
+ backToStats:"← Înapoi la statistici",noAbsences:"Acest elev nu are absențe.",absenceNumber:"Absența nr.",authExpired:"Sesiunea a expirat. Autentifică-te din nou."
 },
-ro: {
-  subtitle:"Jurnal electronic personal de prezență",
-  login:"Autentificare",
-  loginDescription:"Intră în contul tău personal",
-  password:"Parolă",
-  enter:"Intră",
-  home:"Acasă",
-  students:"Elevi",
-  subjects:"Discipline",
-  history:"Istoric",
-  stats:"Statistici",
-  logout:"Ieșire",
-  loading:"Se încarcă datele...",
-  welcome:"Jurnalul tău electronic",
-  studentCount:"Elevi",
-  subjectCount:"Discipline",
-  lessonCount:"Lecții desfășurate",
-  latest:"Ultimele lecții",
-  addStudent:"+ Adaugă elev",
-  addSubject:"+ Adaugă disciplină",
-  addLesson:"+ Lecție nouă",
-  edit:"Modifică",
-  delete:"Șterge",
-  open:"Deschide",
-  back:"← Înapoi",
-  emptyStudents:"Lista elevilor este goală.",
-  emptySubjects:"Nu există discipline.",
-  emptyLessons:"Nu există lecții.",
-  total:"Total",
-  lessons:"Lecții",
-  date:"Data lecției",
-  marks:"Prezența elevilor",
-  present:"Prezent",
-  absent:"Absent",
-  unmarked:"Nemarcat",
-  was:"Prezent",
-  wasNot:"Absent",
-  student:"Elev",
-  chooseStudent:"Alege elevul",
-  chooseSubject:"Toate disciplinele",
-  from:"Data de la",
-  to:"Data până la",
-  filter:"Filtrează",
-  reset:"Resetează",
-  personalStats:"Statistici personale",
-  attendance:"Prezență",
-  visits:"Prezențe",
-  absences:"Absențe",
-  marked:"Lecții marcate",
-  noMarks:"Acest elev nu are încă marcaje.",
-  absenceHistory:"Istoricul absențelor",
-  presenceHistory:"Istoricul prezențelor",
-  subjectStats:"Statistici pe discipline",
-  export:"Exportă în Excel (.xlsx)",
-  noHistory:"Nu există lecții pentru filtrele selectate.",
-  noStudents:"Adaugă mai întâi elevi.",
-  noSubjects:"Adaugă mai întâi o disciplină.",
-  subject:"Disciplina",
-  number:"Lecția nr.",
-  confirmStudent:"Ștergi elevul și marcajele sale?",
-  confirmSubject:"Ștergi disciplina, lecțiile și marcajele?",
-  confirmLesson:"Ștergi lecția și toate marcajele?",
-  enterStudent:"Introdu numele și prenumele elevului:",
-  editStudent:"Modifică numele elevului:",
-  enterSubject:"Introdu denumirea disciplinei:",
-  editSubject:"Modifică denumirea:",
-  excelPresent:"Prezent",
-  excelAbsent:"Absent",
-  excelNone:"Nemarcat",
-  error:"Eroare",
-  loginWait:"Autentificare în curs...",
-  wrongConfig:"Verifică setările Supabase din cod.",
-  noStudentSelected:"Alege mai întâi un elev.",
-  totalLessons:"Total lecții",
-  percent:"Procentul de prezență",
-  selectedStudent:"Elev selectat",
-  viewAbsences:"Vezi absențele",
-  absenceList:"Lista absențelor",
-  backToStats:"← Înapoi la statistici",
-  noAbsences:"Acest elev nu are absențe.",
-  absenceNumber:"Absența nr.",
-  allDates:"Toate datele"
+ru:{
+ subtitle:"Личный электронный журнал посещаемости",login:"Вход в журнал",loginDescription:"Войди в свой личный аккаунт",password:"Пароль",enter:"Войти",
+ home:"Главная",students:"Ученики",subjects:"Предметы",history:"История",stats:"Статистика",logout:"Выйти",
+ loading:"Загрузка данных...",welcome:"Твой электронный журнал",studentCount:"Учеников",subjectCount:"Предметов",lessonCount:"Проведено занятий",latest:"Последние занятия",
+ addStudent:"+ Добавить ученика",addSubject:"+ Добавить предмет",addLesson:"+ Новое занятие",edit:"Изменить",delete:"Удалить",open:"Открыть",back:"← Назад",
+ emptyStudents:"Список учеников пуст.",emptySubjects:"Предметов пока нет.",emptyLessons:"Занятий пока нет.",total:"Всего",lessons:"Занятий",date:"Дата занятия",marks:"Отметки учеников",
+ present:"Присутствовал",absent:"Отсутствовал",unmarked:"Не отмечен",was:"Был",wasNot:"Не был",student:"Ученик",chooseStudent:"Выбери ученика",chooseSubject:"Все предметы",
+ from:"Дата с",to:"Дата по",filter:"Фильтр",reset:"Сбросить",personalStats:"Персональная статистика",attendance:"Посещаемость",visits:"Присутствий",absences:"Пропусков",
+ marked:"Отмечено занятий",noMarks:"Для этого ученика пока нет отметок.",absenceHistory:"История пропусков",presenceHistory:"История посещений",
+ subjectStats:"Статистика по предметам",export:"Экспорт в Excel (.xlsx)",noHistory:"Занятий по выбранным фильтрам нет.",noStudents:"Сначала добавь учеников.",
+ noSubjects:"Сначала добавь предмет.",subject:"Предмет",number:"Занятие №",confirmStudent:"Удалить ученика и его отметки?",
+ confirmSubject:"Удалить предмет, все его занятия и отметки?",confirmLesson:"Удалить занятие и все его отметки?",enterStudent:"Введите имя и фамилию ученика:",
+ editStudent:"Изменить имя ученика:",enterSubject:"Введите название предмета:",editSubject:"Изменить название:",
+ excelPresent:"Присутствовал",excelAbsent:"Отсутствовал",excelNone:"Не отмечено",error:"Ошибка",loginWait:"Выполняется вход...",
+ wrongConfig:"Проверь настройки Supabase в коде.",noStudentSelected:"Сначала выбери ученика.",
+ percent:"Процент посещаемости",selectedStudent:"Выбранный ученик",viewAbsences:"Посмотреть пропуски",absenceList:"Список пропусков",
+ backToStats:"← К статистике ученика",noAbsences:"У этого ученика нет пропусков.",absenceNumber:"Пропуск №",authExpired:"Сессия истекла. Войди снова."
 }
 };
 
-let language=localStorage.getItem("cj_language") || "ru";
-
-function t(key) {
-  return translations[language][key] || key;
-}
-
-function setLanguage(value) {
-  language=value;
-  localStorage.setItem("cj_language",value);
-  document.documentElement.lang=value;
-  updateStaticText();
-  render();
-}
-
-function updateStaticText() {
-  document.getElementById("language").value=language;
-  document.getElementById("subtitle").textContent=t("subtitle");
-  document.getElementById("loginTitle").textContent=t("login");
-  document.getElementById("loginDescription").textContent=t("loginDescription");
-  document.getElementById("passwordLabel").textContent=t("password");
-  document.getElementById("loginButton").textContent=t("enter");
-
-  const ids={
-    navHome:"home",
-    navStudents:"students",
-    navSubjects:"subjects",
-    navHistory:"history",
-    navStats:"stats",
-    logoutButton:"logout"
-  };
-
-  Object.entries(ids).forEach(([id,key])=>{
-    document.getElementById(id).textContent=t(key);
-  });
-}
-
-// ==========================================
-// 3. СОСТОЯНИЕ
-// ==========================================
-
-let data={
-  students:[],
-  subjects:[],
-  lessons:[],
-  attendance:{}
-};
-
-let page="home";
-let selectedSubject=null;
-let selectedLesson=null;
-let lessonReturnPage="history";
-let selectedStudent="";
-let historySubject="";
-let historyFrom="";
-let historyTo="";
-let busy=false;
-
+let language=localStorage.getItem("cj_language")||"ro";
+if(!translations[language]) language="ro";
+const t=k=>translations[language][k]||k;
+let db=null;
+let data={students:[],subjects:[],lessons:[],attendance:{}};
+let page="home",selectedSubject=null,selectedLesson=null,lessonReturnPage="history";
+let selectedStudent="",historySubject="",historyFrom="",historyTo="",busy=false;
 const app=document.getElementById("app");
+const tg=window.Telegram?.WebApp||null;
 
-function safe(value) {
-  return String(value ?? "").replace(/[&<>"']/g,c=>({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[c]);
+function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function localDate(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+function button(text,action,primary=false){return `<button class="${primary?"primary":""}" onclick="${action}">${text}</button>`;}
+function notify(message){if(tg?.showAlert)tg.showAlert(String(message));else alert(message);}
+function setBusy(v){busy=v;document.querySelectorAll("button").forEach(b=>b.disabled=v);}
+async function run(action){if(busy)return;setBusy(true);try{await action();}catch(e){console.error(e);notify(t("error")+": "+(e.message||e));}finally{setBusy(false);}}
+
+function updateStaticText(){
+ document.documentElement.lang=language;
+ document.getElementById("language").value=language;
+ document.getElementById("subtitle").textContent=t("subtitle");
+ document.getElementById("loginTitle").textContent=t("login");
+ document.getElementById("loginDescription").textContent=t("loginDescription");
+ document.getElementById("passwordLabel").textContent=t("password");
+ document.getElementById("loginButton").textContent=t("enter");
+ const ids={navHome:"home",navStudents:"students",navSubjects:"subjects",navHistory:"history",navStats:"stats",logoutButton:"logout"};
+ Object.entries(ids).forEach(([id,k])=>document.getElementById(id).textContent=t(k));
 }
+function setLanguage(v){if(!translations[v])return;language=v;localStorage.setItem("cj_language",v);updateStaticText();render();}
 
-function localDate() {
-  const d=new Date();
-  return [
-    d.getFullYear(),
-    String(d.getMonth()+1).padStart(2,"0"),
-    String(d.getDate()).padStart(2,"0")
-  ].join("-");
-}
-
-function button(text,action,primary=false) {
-  return `<button class="${primary?"primary":""}"
-    onclick="${action}">${text}</button>`;
-}
-
-function notify(message) {
-  alert(message);
-}
-
-function setBusy(value) {
-  busy=value;
-  document.querySelectorAll("button").forEach(b=>{
-    b.disabled=value;
-  });
-}
-
-async function run(action) {
-  if (busy) return;
-  setBusy(true);
-  try {
-    await action();
-  } catch(error) {
-    console.error(error);
-    notify(t("error")+": "+(error.message || error));
-  } finally {
-    setBusy(false);
+function initSupabase(){
+ if(!window.supabase||!SUPABASE_URL.startsWith("https://")||SUPABASE_URL.includes("PUNE_AICI")||!SUPABASE_KEY||SUPABASE_KEY.includes("PUNE_AICI"))return false;
+ db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ db.auth.onAuthStateChange((event)=>{
+  if(event==="SIGNED_OUT"){
+   data={students:[],subjects:[],lessons:[],attendance:{}};
+   document.getElementById("journal").classList.add("hidden");
+   document.getElementById("auth").classList.remove("hidden");
+   document.getElementById("authMessage").textContent="";
+   page="home";updateTelegramBackButton();
   }
+ });
+ return true;
+}
+async function login(event){
+ event.preventDefault();
+ if(!db){document.getElementById("authMessage").textContent=t("wrongConfig");return;}
+ const message=document.getElementById("authMessage");
+ message.textContent=t("loginWait");
+ const {error}=await db.auth.signInWithPassword({email:document.getElementById("email").value,password:document.getElementById("password").value});
+ if(error){message.textContent=error.message;return;}
+ try{await startJournal();}catch(e){message.textContent=t("error")+": "+e.message;}
+}
+async function logout(){if(!db)return;const {error}=await db.auth.signOut();if(error)notify(error.message);}
+async function startJournal(){
+ document.getElementById("auth").classList.add("hidden");
+ document.getElementById("journal").classList.remove("hidden");
+ await loadData();
+}
+async function checkAuth(){
+ if(!initSupabase()){document.getElementById("auth").classList.remove("hidden");document.getElementById("authMessage").textContent=t("wrongConfig");return;}
+ const {data:result,error}=await db.auth.getSession();
+ if(error){notify(error.message);return;}
+ if(result.session){try{await startJournal();}catch(e){console.error(e);notify(t("error")+": "+e.message);}}
+ else document.getElementById("auth").classList.remove("hidden");
 }
 
-// ==========================================
-// 4. АВТОРИЗАЦИЯ
-// ==========================================
-
-async function login(event) {
-  event.preventDefault();
-
-  const email=document.getElementById("email").value;
-  const password=document.getElementById("password").value;
-  const message=document.getElementById("authMessage");
-
-  message.textContent=t("loginWait");
-
-  const {error}=await db.auth.signInWithPassword({
-    email,password
-  });
-
-  if (error) {
-    message.textContent=error.message;
-    return;
-  }
-
-  await startJournal();
+async function loadData(){
+ app.innerHTML=`<p class="muted">${t("loading")}</p>`;
+ const [students,subjects,lessons,attendance]=await Promise.all([
+  db.from("students").select("*").order("full_name"),
+  db.from("subjects").select("*").order("name"),
+  db.from("lessons").select("*").order("lesson_date"),
+  db.from("attendance").select("*")
+ ]);
+ for(const r of [students,subjects,lessons,attendance])if(r.error)throw r.error;
+ data.students=students.data||[];data.subjects=subjects.data||[];data.lessons=lessons.data||[];data.attendance={};
+ (attendance.data||[]).forEach(m=>{data.attendance[m.lesson_id]??={};data.attendance[m.lesson_id][m.student_id]=m.is_present;});
+ render();
 }
 
-async function logout() {
-  await db.auth.signOut();
-  location.reload();
+async function addStudent(){const name=prompt(t("enterStudent"));if(!name?.trim())return;await run(async()=>{const {error}=await db.from("students").insert({full_name:name.trim()});if(error)throw error;await loadData();});}
+async function editStudent(id){const s=data.students.find(x=>x.id===id);if(!s)return;const name=prompt(t("editStudent"),s.full_name);if(!name?.trim())return;await run(async()=>{const {error}=await db.from("students").update({full_name:name.trim()}).eq("id",id);if(error)throw error;await loadData();});}
+async function deleteStudent(id){if(!confirm(t("confirmStudent")))return;await run(async()=>{const {error:e1}=await db.from("attendance").delete().eq("student_id",id);if(e1)throw e1;const {error}=await db.from("students").delete().eq("id",id);if(error)throw error;if(selectedStudent===id)selectedStudent="";await loadData();});}
+async function addSubject(){const name=prompt(t("enterSubject"));if(!name?.trim())return;await run(async()=>{const {error}=await db.from("subjects").insert({name:name.trim()});if(error)throw error;await loadData();});}
+async function editSubject(id){const s=data.subjects.find(x=>x.id===id);if(!s)return;const name=prompt(t("editSubject"),s.name);if(!name?.trim())return;await run(async()=>{const {error}=await db.from("subjects").update({name:name.trim()}).eq("id",id);if(error)throw error;await loadData();});}
+async function deleteSubject(id){if(!confirm(t("confirmSubject")))return;await run(async()=>{const ls=data.lessons.filter(x=>x.subject_id===id);for(const l of ls){const {error:e1}=await db.from("attendance").delete().eq("lesson_id",l.id);if(e1)throw e1;const {error:e2}=await db.from("lessons").delete().eq("id",l.id);if(e2)throw e2;}const {error}=await db.from("subjects").delete().eq("id",id);if(error)throw error;selectedSubject=null;selectedLesson=null;await loadData();});}
+async function addLesson(){if(!selectedSubject)return;const prev=data.lessons.filter(x=>x.subject_id===selectedSubject);const number=prev.length?Math.max(...prev.map(x=>x.lesson_number))+1:1;await run(async()=>{const {data:l,error}=await db.from("lessons").insert({subject_id:selectedSubject,lesson_number:number,lesson_date:localDate()}).select().single();if(error)throw error;selectedLesson=l.id;lessonReturnPage="subject";page="lesson";await loadData();});}
+async function changeDate(v){if(!v||!selectedLesson)return;await run(async()=>{const {error}=await db.from("lessons").update({lesson_date:v}).eq("id",selectedLesson);if(error)throw error;await loadData();});}
+async function deleteLesson(id){if(!confirm(t("confirmLesson")))return;await run(async()=>{const {error:e1}=await db.from("attendance").delete().eq("lesson_id",id);if(e1)throw e1;const {error}=await db.from("lessons").delete().eq("id",id);if(error)throw error;selectedLesson=null;await loadData();});}
+async function setAttendance(studentId,value){await run(async()=>{if(value==="none"){const {error}=await db.from("attendance").delete().eq("lesson_id",selectedLesson).eq("student_id",studentId);if(error)throw error;}else{const {error}=await db.from("attendance").upsert({lesson_id:selectedLesson,student_id:studentId,is_present:value==="present"},{onConflict:"lesson_id,student_id"});if(error)throw error;}await loadData();});}
+
+function studentStats(studentId,subjectId=null){
+ const ls=data.lessons.filter(l=>!subjectId||l.subject_id===subjectId);let present=0,absent=0,marked=0;const absences=[],presences=[];
+ ls.forEach(l=>{const mark=data.attendance[l.id]?.[studentId];if(mark===undefined)return;const subject=data.subjects.find(s=>s.id===l.subject_id);const r={date:l.lesson_date,number:l.lesson_number,subject:subject?.name||"",lessonId:l.id};marked++;if(mark){present++;presences.push(r);}else{absent++;absences.push(r);}});
+ return{present,absent,marked,percent:marked?Math.round(present/marked*100):0,absences,presences};
+}
+function go(p){page=p;selectedSubject=null;selectedLesson=null;render();}
+function openSubject(id){selectedSubject=id;selectedLesson=null;page="subject";render();}
+function openLesson(id,returnPage){selectedLesson=id;lessonReturnPage=returnPage||"history";page="lesson";render();}
+function backFromLesson(){page=lessonReturnPage||"history";selectedLesson=null;render();}
+function backFromAbsences(){page="stats";render();}
+function openAbsences(){if(!selectedStudent)return;page="absences";render();}
+function selectStudent(id){selectedStudent=id;render();}
+function applyHistoryFilters(){historySubject=document.getElementById("historySubject").value;historyFrom=document.getElementById("historyFrom").value;historyTo=document.getElementById("historyTo").value;render();}
+function resetHistoryFilters(){historySubject="";historyFrom="";historyTo="";render();}
+function filteredLessons(){return data.lessons.filter(l=>(!historySubject||l.subject_id===historySubject)&&(!historyFrom||l.lesson_date>=historyFrom)&&(!historyTo||l.lesson_date<=historyTo)).sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date)||b.lesson_number-a.lesson_number);}
+
+function exportExcel(){
+ if(!selectedStudent){notify(t("noStudentSelected"));return;}if(!window.XLSX){notify("Excel library is unavailable.");return;}
+ const s=data.students.find(x=>x.id===selectedStudent);if(!s)return;
+ const rows=[[t("student"),t("subject"),t("number"),t("date"),t("attendance")]];
+ data.lessons.slice().sort((a,b)=>a.lesson_date.localeCompare(b.lesson_date)).forEach(l=>{const m=data.attendance[l.id]?.[selectedStudent],sub=data.subjects.find(x=>x.id===l.subject_id);rows.push([s.full_name,sub?.name||"",l.lesson_number,l.lesson_date,m===true?t("excelPresent"):m===false?t("excelAbsent"):t("excelNone")]);});
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),"Student");
+ XLSX.writeFile(wb,"College-Journal-"+s.full_name.replace(/[^\p{L}\p{N}-]/gu,"_")+".xlsx");
 }
 
-async function startJournal() {
-  document.getElementById("auth").classList.add("hidden");
-  document.getElementById("journal").classList.remove("hidden");
-  await loadData();
+function renderStudentStats(student){
+ const st=studentStats(student.id);
+ const subjectBlocks=data.subjects.map(sub=>{const x=studentStats(student.id,sub.id);return `<div class="card"><b>${safe(sub.name)}</b><strong>${x.percent}%</strong><div class="progress"><div style="width:${x.percent}%"></div></div><div class="stat-line"><span>${t("visits")}</span><b class="present">${x.present}</b></div><div class="stat-line"><span>${t("absences")}</span><b class="absent">${x.absent}</b></div><div class="small">${t("marked")}: ${x.marked}</div></div>`;}).join("");
+ const list=records=>records.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(r=>`<div class="item"><span><b>${safe(r.subject)}</b><div class="small">${safe(r.date)} · ${t("number")} ${r.number}</div></span>${button(t("open"),`openLesson('${r.lessonId}','stats')`)}</div>`).join("")||`<p class="muted">${t("noMarks")}</p>`;
+ return `<h3>${safe(student.full_name)}</h3><div class="cards">
+ <div class="card"><strong>${st.present}</strong><span class="muted">${t("visits")}</span></div>
+ <div class="card"><strong>${st.absent}</strong><span class="muted">${t("absences")}</span></div>
+ <div class="card"><strong>${st.percent}%</strong><span class="muted">${t("percent")}</span></div>
+ <div class="card"><strong>${st.marked}</strong><span class="muted">${t("marked")}</span></div></div>
+ <div class="card"><b>${t("attendance")}</b><div class="progress"><div style="width:${st.percent}%"></div></div><span class="small">${st.percent}%</span></div>
+ <h3>${t("subjectStats")}</h3>${subjectBlocks||`<p class="muted">${t("noSubjects")}</p>`}
+ <h3>${t("absenceHistory")}</h3><div class="card"><strong>${st.absent}</strong><span class="muted">${t("absences")}</span><div class="actions">${button(t("viewAbsences"),"openAbsences()",true)}</div></div>
+ <h3>${t("presenceHistory")}</h3>${list(st.presences)}<div class="actions">${button(t("export"),"exportExcel()",true)}</div>`;
 }
 
-async function checkAuth() {
-  if (
-    !SUPABASE_URL.startsWith("https://") ||
-    SUPABASE_URL.includes("ВСТАВЬ") ||
-    !SUPABASE_KEY ||
-    SUPABASE_KEY.includes("ВСТАВЬ")
-  ) {
-    document.getElementById("auth").classList.remove("hidden");
-    document.getElementById("authMessage").textContent=t("wrongConfig");
-    return;
-  }
-
-  const {data:result,error}=await db.auth.getSession();
-
-  if (error) {
-    notify(error.message);
-    return;
-  }
-
-  if (result.session) {
-    await startJournal();
-  } else {
-    document.getElementById("auth").classList.remove("hidden");
-  }
+function lessonView(){
+ const l=data.lessons.find(x=>x.id===selectedLesson);if(!l){page=lessonReturnPage||"history";return "";}
+ const sub=data.subjects.find(x=>x.id===l.subject_id),marks=data.attendance[l.id]||{};
+ return `${button(t("back"),"backFromLesson()")}<h2>${safe(sub?.name||"")}</h2><div class="card"><h3>${t("number")} ${l.lesson_number}</h3><label>${t("date")}</label><input type="date" value="${safe(l.lesson_date)}" onchange="changeDate(this.value)"><h3>${t("marks")}</h3>
+ ${data.students.map((s,i)=>{const m=marks[s.id],label=m===true?t("present"):m===false?t("absent"):t("unmarked");return `<div class="item"><span>${i+1}. ${safe(s.full_name)}<div class="small ${m===true?"present":m===false?"absent":""}">${label}</div></span><select style="width:145px;margin:0" onchange="setAttendance('${s.id}',this.value)"><option value="none" ${m===undefined?"selected":""}>${t("unmarked")}</option><option value="present" ${m===true?"selected":""}>${t("was")}</option><option value="absent" ${m===false?"selected":""}>${t("wasNot")}</option></select></div>`;}).join("")||`<p class="muted">${t("noStudents")}</p>`}</div>`;
 }
 
-// ==========================================
-// 5. ЗАГРУЗКА ДАННЫХ
-// ==========================================
-
-async function loadData() {
-  app.innerHTML=`<p class="muted">${t("loading")}</p>`;
-
-  const [students,subjects,lessons,attendance]=await Promise.all([
-    db.from("students").select("*").order("full_name"),
-    db.from("subjects").select("*").order("name"),
-    db.from("lessons").select("*").order("lesson_date"),
-    db.from("attendance").select("*")
-  ]);
-
-  for (const result of [students,subjects,lessons,attendance]) {
-    if (result.error) throw result.error;
-  }
-
-  data.students=students.data;
-  data.subjects=subjects.data;
-  data.lessons=lessons.data;
-  data.attendance={};
-
-  attendance.data.forEach(mark=>{
-    if (!data.attendance[mark.lesson_id]) {
-      data.attendance[mark.lesson_id]={};
-    }
-    data.attendance[mark.lesson_id][mark.student_id]=mark.is_present;
-  });
-
-  render();
+function render(){
+ updateStaticText();
+ document.querySelectorAll("nav button[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page||(page==="subject"&&b.dataset.page==="subjects")||(page==="lesson"&&((lessonReturnPage==="subject"&&b.dataset.page==="subjects")||(lessonReturnPage==="absences"&&b.dataset.page==="stats")||b.dataset.page===lessonReturnPage))));
+ if(page==="home"){
+  const latest=data.lessons.slice().sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date)).slice(0,5);
+  app.innerHTML=`<h2>${t("home")}</h2><p class="muted">${t("welcome")}</p><div class="cards">
+  <div class="card"><strong>${data.students.length}</strong><span class="muted">${t("studentCount")}</span></div>
+  <div class="card"><strong>${data.subjects.length}</strong><span class="muted">${t("subjectCount")}</span></div>
+  <div class="card"><strong>${data.lessons.length}</strong><span class="muted">${t("lessonCount")}</span></div></div>
+  <div class="actions">${button(t("addStudent"),"addStudent()",true)}${button(t("addSubject"),"addSubject()")}</div><h3>${t("latest")}</h3>
+  ${latest.map(l=>{const s=data.subjects.find(x=>x.id===l.subject_id);return `<div class="item"><span>${safe(s?.name)} · ${t("number")} ${l.lesson_number}<div class="small">${safe(l.lesson_date)}</div></span>${button(t("open"),`openLesson('${l.id}','history')`)}</div>`;}).join("")||`<p class="muted">${t("emptyLessons")}</p>`}`;
+ }
+ if(page==="students")app.innerHTML=`<h2>${t("students")}</h2><p class="muted">${t("total")}: ${data.students.length}</p><div class="actions">${button(t("addStudent"),"addStudent()",true)}</div>${data.students.map((s,i)=>`<div class="item"><span>${i+1}. ${safe(s.full_name)}</span><span>${button(t("edit"),`editStudent('${s.id}')`)} ${button(t("delete"),`deleteStudent('${s.id}')`)}</span></div>`).join("")||`<p class="muted">${t("emptyStudents")}</p>`}`;
+ if(page==="subjects")app.innerHTML=`<h2>${t("subjects")}</h2><div class="actions">${button(t("addSubject"),"addSubject()",true)}</div>${data.subjects.map(s=>`<div class="item"><span><b>${safe(s.name)}</b><div class="small">${data.lessons.filter(l=>l.subject_id===s.id).length} ${t("lessons")}</div></span><span>${button(t("open"),`openSubject('${s.id}')`)} ${button(t("edit"),`editSubject('${s.id}')`)} ${button(t("delete"),`deleteSubject('${s.id}')`)}</span></div>`).join("")||`<p class="muted">${t("emptySubjects")}</p>`}`;
+ if(page==="subject"){
+  const s=data.subjects.find(x=>x.id===selectedSubject);if(!s){page="subjects";render();return;}
+  const ls=data.lessons.filter(x=>x.subject_id===selectedSubject).sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date));
+  app.innerHTML=`${button(t("back"),"go('subjects')")}<h2>${safe(s.name)}</h2><div class="card"><strong>${ls.length}</strong><span class="muted">${t("lessonCount")}</span></div><div class="actions">${button(t("addLesson"),"addLesson()",true)}</div><h3>${t("history")}</h3>${ls.map(l=>`<div class="item"><span>${t("number")} ${l.lesson_number}<div class="small">${safe(l.lesson_date)}</div></span><span>${button(t("open"),`openLesson('${l.id}','subject')`)} ${button(t("delete"),`deleteLesson('${l.id}')`)}</span></div>`).join("")||`<p class="muted">${t("emptyLessons")}</p>`}`;
+ }
+ if(page==="history")app.innerHTML=`<h2>${t("history")}</h2><div class="card"><div class="filters"><div><label>${t("subject")}</label><select id="historySubject"><option value="">${t("chooseSubject")}</option>${data.subjects.map(s=>`<option value="${s.id}" ${historySubject===s.id?"selected":""}>${safe(s.name)}</option>`).join("")}</select></div><div><label>${t("from")}</label><input id="historyFrom" type="date" value="${safe(historyFrom)}"></div><div><label>${t("to")}</label><input id="historyTo" type="date" value="${safe(historyTo)}"></div></div><div class="actions">${button(t("filter"),"applyHistoryFilters()",true)}${button(t("reset"),"resetHistoryFilters()")}</div></div>${filteredLessons().map(l=>{const s=data.subjects.find(x=>x.id===l.subject_id);return `<div class="item"><span><b>${safe(s?.name||"")}</b><div class="small">${t("number")} ${l.lesson_number} · ${safe(l.lesson_date)}</div></span>${button(t("open"),`openLesson('${l.id}','history')`)}</div>`;}).join("")||`<p class="muted">${t("noHistory")}</p>`}`;
+ if(page==="stats"){
+  const s=data.students.find(x=>x.id===selectedStudent);
+  app.innerHTML=`<h2>${t("personalStats")}</h2><label>${t("selectedStudent")}</label><select id="studentSelect" onchange="selectStudent(this.value)"><option value="">${t("chooseStudent")}</option>${data.students.map(x=>`<option value="${x.id}" ${selectedStudent===x.id?"selected":""}>${safe(x.full_name)}</option>`).join("")}</select>${s?renderStudentStats(s):`<p class="notice">${t("chooseStudent")}</p>`}`;
+ }
+ if(page==="absences"){
+  const s=data.students.find(x=>x.id===selectedStudent);if(!s){page="stats";render();return;}
+  const records=studentStats(s.id).absences.slice().sort((a,b)=>a.date.localeCompare(b.date)||a.number-b.number);
+  app.innerHTML=`${button(t("backToStats"),"backFromAbsences()")}<h2>${t("absenceList")}</h2><p class="muted">${safe(s.full_name)}</p><div class="card"><strong>${records.length}</strong><span class="muted">${t("absences")}</span></div>${records.map((r,i)=>`<div class="item absence-item"><span><b>${t("absenceNumber")} ${i+1}</b><div class="small">${safe(r.date.split("-").reverse().join("."))}</div><div>${safe(r.subject)}</div><div class="small">${t("number")} ${r.number}</div></span>${button(t("open"),`openLesson('${r.lessonId}','absences')`)}</div>`).join("")||`<p class="muted">${t("noAbsences")}</p>`}`;
+ }
+ if(page==="lesson")app.innerHTML=lessonView();
+ updateTelegramBackButton();
 }
 
-// ==========================================
-// 6. УЧЕНИКИ
-// ==========================================
-
-async function addStudent() {
-  const name=prompt(t("enterStudent"));
-  if (!name || !name.trim()) return;
-
-  await run(async()=>{
-    const {error}=await db.from("students").insert({
-      full_name:name.trim()
-    });
-    if (error) throw error;
-    await loadData();
-  });
+/* Telegram: интеграция безопасно отключается в обычном браузере. */
+function initTelegram(){
+ if(!tg){document.getElementById("fullscreenButton").classList.add("hidden");return;}
+ tg.ready();tg.expand();
+ document.getElementById("fullscreenButton").classList.remove("hidden");
+ applyTelegramTheme();
+ if(tg.BackButton){tg.BackButton.onClick(handleTelegramBack);updateTelegramBackButton();}
+ tg.onEvent("themeChanged",applyTelegramTheme);
+}
+function applyTelegramTheme(){
+ if(!tg)return;const p=tg.themeParams||{},root=document.documentElement;
+ if(p.bg_color)root.style.setProperty("--bg",p.bg_color);
+ if(p.secondary_bg_color)root.style.setProperty("--panel",p.secondary_bg_color);
+ if(p.text_color)root.style.setProperty("--text",p.text_color);
+ if(p.hint_color)root.style.setProperty("--muted",p.hint_color);
+ if(p.button_color)root.style.setProperty("--accent",p.button_color);
+ if(p.button_text_color)document.querySelectorAll(".primary,nav button.active").forEach(b=>b.style.color=p.button_text_color);
+ if(tg.setHeaderColor&&p.bg_color)tg.setHeaderColor(p.bg_color);
+ if(tg.setBackgroundColor&&p.bg_color)tg.setBackgroundColor(p.bg_color);
+}
+function toggleFullscreen(){
+ if(!tg)return;
+ try{if(tg.isFullscreen&&tg.exitFullscreen)tg.exitFullscreen();else if(tg.requestFullscreen)tg.requestFullscreen();else tg.expand();}
+ catch(e){console.warn("Fullscreen unavailable",e);tg.expand();}
+}
+function updateTelegramBackButton(){
+ if(!tg?.BackButton)return;
+ if(page!=="home"&&!document.getElementById("journal").classList.contains("hidden"))tg.BackButton.show();else tg.BackButton.hide();
+}
+function handleTelegramBack(){
+ if(page==="lesson")backFromLesson();
+ else if(page==="absences")backFromAbsences();
+ else if(page==="subject")go("subjects");
+ else go("home");
 }
 
-async function editStudent(id) {
-  const student=data.students.find(s=>s.id===id);
-  if (!student) return;
-
-  const name=prompt(t("editStudent"),student.full_name);
-  if (!name || !name.trim()) return;
-
-  await run(async()=>{
-    const {error}=await db.from("students")
-      .update({full_name:name.trim()}).eq("id",id);
-    if (error) throw error;
-    await loadData();
-  });
-}
-
-async function deleteStudent(id) {
-  if (!confirm(t("confirmStudent"))) return;
-
-  await run(async()=>{
-    const {error:markError}=await db.from("attendance")
-      .delete().eq("student_id",id);
-    if (markError) throw markError;
-
-    const {error}=await db.from("students")
-      .delete().eq("id",id);
-    if (error) throw error;
-
-    if (selectedStudent===id) selectedStudent="";
-    await loadData();
-  });
-}
-
-// ==========================================
-// 7. ПРЕДМЕТЫ
-// ==========================================
-
-async function addSubject() {
-  const name=prompt(t("enterSubject"));
-  if (!name || !name.trim()) return;
-
-  await run(async()=>{
-    const {error}=await db.from("subjects").insert({
-      name:name.trim()
-    });
-    if (error) throw error;
-    await loadData();
-  });
-}
-
-async function editSubject(id) {
-  const subject=data.subjects.find(s=>s.id===id);
-  if (!subject) return;
-
-  const name=prompt(t("editSubject"),subject.name);
-  if (!name || !name.trim()) return;
-
-  await run(async()=>{
-    const {error}=await db.from("subjects")
-      .update({name:name.trim()}).eq("id",id);
-    if (error) throw error;
-    await loadData();
-  });
-}
-
-async function deleteSubject(id) {
-  if (!confirm(t("confirmSubject"))) return;
-
-  await run(async()=>{
-    const lessons=data.lessons.filter(l=>l.subject_id===id);
-
-    for (const lesson of lessons) {
-      const {error:markError}=await db.from("attendance")
-        .delete().eq("lesson_id",lesson.id);
-      if (markError) throw markError;
-
-      const {error:lessonError}=await db.from("lessons")
-        .delete().eq("id",lesson.id);
-      if (lessonError) throw lessonError;
-    }
-
-    const {error}=await db.from("subjects")
-      .delete().eq("id",id);
-    if (error) throw error;
-
-    selectedSubject=null;
-    selectedLesson=null;
-    await loadData();
-  });
-}
-
-// ==========================================
-// 8. ЗАНЯТИЯ
-// ==========================================
-
-async function addLesson() {
-  if (!selectedSubject) return;
-
-  const previous=data.lessons.filter(
-    l=>l.subject_id===selectedSubject
-  );
-
-  const number=previous.length
-    ? Math.max(...previous.map(l=>l.lesson_number))+1
-    : 1;
-
-  await run(async()=>{
-    const {data:lesson,error}=await db.from("lessons")
-      .insert({
-        subject_id:selectedSubject,
-        lesson_number:number,
-        lesson_date:localDate()
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    selectedLesson=lesson.id;
-    lessonReturnPage="subject";
-    page="lesson";
-    await loadData();
-  });
-}
-
-async function changeDate(value) {
-  if (!value || !selectedLesson) return;
-
-  await run(async()=>{
-    const {error}=await db.from("lessons")
-      .update({lesson_date:value}).eq("id",selectedLesson);
-
-    if (error) throw error;
-    await loadData();
-  });
-}
-
-async function deleteLesson(id) {
-  if (!confirm(t("confirmLesson"))) return;
-
-  await run(async()=>{
-    const {error:markError}=await db.from("attendance")
-      .delete().eq("lesson_id",id);
-    if (markError) throw markError;
-
-    const {error}=await db.from("lessons")
-      .delete().eq("id",id);
-    if (error) throw error;
-
-    selectedLesson=null;
-    await loadData();
-  });
-}
-
-// ==========================================
-// 9. ПОСЕЩАЕМОСТЬ
-// ==========================================
-
-async function setAttendance(studentId,value) {
-  await run(async()=>{
-    if (value==="none") {
-      const {error}=await db.from("attendance")
-        .delete()
-        .eq("lesson_id",selectedLesson)
-        .eq("student_id",studentId);
-      if (error) throw error;
-    } else {
-      const {error}=await db.from("attendance")
-        .upsert({
-          lesson_id:selectedLesson,
-          student_id:studentId,
-          is_present:value==="present"
-        },{onConflict:"lesson_id,student_id"});
-      if (error) throw error;
-    }
-
-    await loadData();
-  });
-}
-
-// ==========================================
-// 10. ПЕРСОНАЛЬНАЯ СТАТИСТИКА
-// ==========================================
-
-function studentStats(studentId,subjectId=null) {
-  const lessons=data.lessons.filter(l=>
-    !subjectId || l.subject_id===subjectId
-  );
-
-  let present=0;
-  let absent=0;
-  let marked=0;
-
-  const absences=[];
-  const presences=[];
-
-  lessons.forEach(lesson=>{
-    const mark=data.attendance[lesson.id]?.[studentId];
-
-    if (mark===undefined) return;
-
-    const subject=data.subjects.find(
-      s=>s.id===lesson.subject_id
-    );
-
-    const record={
-      date:lesson.lesson_date,
-      number:lesson.lesson_number,
-      subject:subject?.name || "",
-      lessonId:lesson.id
-    };
-
-    marked++;
-
-    if (mark===true) {
-      present++;
-      presences.push(record);
-    } else {
-      absent++;
-      absences.push(record);
-    }
-  });
-
-  return {
-    present,
-    absent,
-    marked,
-    percent:marked ? Math.round(present/marked*100) : 0,
-    absences,
-    presences
-  };
-}
-
-// ==========================================
-// 11. НАВИГАЦИЯ
-// ==========================================
-
-function go(p) {
-  page=p;
-  selectedSubject=null;
-  selectedLesson=null;
-  render();
-}
-
-function openSubject(id) {
-  selectedSubject=id;
-  selectedLesson=null;
-  page="subject";
-  render();
-}
-
-function openLesson(id,returnPage) {
-  selectedLesson=id;
-  lessonReturnPage=returnPage || "history";
-  page="lesson";
-  render();
-}
-
-function backFromLesson() {
-  page=lessonReturnPage || "history";
-  selectedLesson=null;
-  render();
-}
-
-function backFromAbsences() {
-  page="stats";
-  render();
-}
-
-// ==========================================
-// 12. ИСТОРИЯ И ФИЛЬТРЫ
-// ==========================================
-
-function applyHistoryFilters() {
-  historySubject=document.getElementById("historySubject").value;
-  historyFrom=document.getElementById("historyFrom").value;
-  historyTo=document.getElementById("historyTo").value;
-  render();
-}
-
-function resetHistoryFilters() {
-  historySubject="";
-  historyFrom="";
-  historyTo="";
-  render();
-}
-
-function filteredLessons() {
-  return data.lessons.filter(l=>{
-    if (historySubject && l.subject_id!==historySubject) return false;
-    if (historyFrom && l.lesson_date<historyFrom) return false;
-    if (historyTo && l.lesson_date>historyTo) return false;
-    return true;
-  }).sort((a,b)=>
-    b.lesson_date.localeCompare(a.lesson_date) ||
-    b.lesson_number-a.lesson_number
-  );
-}
-
-// ==========================================
-// 13. EXCEL
-// ==========================================
-
-function exportExcel() {
-  if (!selectedStudent) {
-    notify(t("noStudentSelected"));
-    return;
-  }
-
-  const student=data.students.find(s=>s.id===selectedStudent);
-  if (!student) return;
-
-  const rows=[[
-    t("student"),
-    t("subject"),
-    t("number"),
-    t("date"),
-    t("attendance")
-  ]];
-
-  data.lessons
-    .slice()
-    .sort((a,b)=>a.lesson_date.localeCompare(b.lesson_date))
-    .forEach(lesson=>{
-      const mark=data.attendance[lesson.id]?.[selectedStudent];
-      const subject=data.subjects.find(s=>s.id===lesson.subject_id);
-
-      rows.push([
-        student.full_name,
-        subject?.name || "",
-        lesson.lesson_number,
-        lesson.lesson_date,
-        mark===true ? t("excelPresent") :
-        mark===false ? t("excelAbsent") : t("excelNone")
-      ]);
-    });
-
-  const workbook=XLSX.utils.book_new();
-  const sheet=XLSX.utils.aoa_to_sheet(rows);
-
-  XLSX.utils.book_append_sheet(workbook,sheet,"Student");
-
-  XLSX.writeFile(
-    workbook,
-    "College-Journal-"+student.full_name.replace(/[^\p{L}\p{N}-]/gu,"_")+".xlsx"
-  );
-}
-
-// ==========================================
-// 14. ОТОБРАЖЕНИЕ СТРАНИЦ
-// ==========================================
-
-function render() {
-  updateStaticText();
-
-  document.querySelectorAll("nav button[data-page]").forEach(b=>{
-    b.classList.toggle("active",
-      b.dataset.page===page ||
-      (page==="subject" && b.dataset.page==="subjects") ||
-      (page==="lesson" && lessonReturnPage==="subject" &&
-       b.dataset.page==="subjects") ||
-      (page==="lesson" && ["history","stats","absences"].includes(lessonReturnPage) &&
-       b.dataset.page===(lessonReturnPage==="absences"?"stats":lessonReturnPage))
-    );
-  });
-
-  // ГЛАВНАЯ
-
-  if (page==="home") {
-    const latest=data.lessons.slice()
-      .sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date))
-      .slice(0,5);
-
-    app.innerHTML=`
-      <h2>${t("home")}</h2>
-      <p class="muted">${t("welcome")}</p>
-
-      <div class="cards">
-        <div class="card"><strong>${data.students.length}</strong>
-          <span class="muted">${t("studentCount")}</span></div>
-        <div class="card"><strong>${data.subjects.length}</strong>
-          <span class="muted">${t("subjectCount")}</span></div>
-        <div class="card"><strong>${data.lessons.length}</strong>
-          <span class="muted">${t("lessonCount")}</span></div>
-      </div>
-
-      <div class="actions">
-        ${button(t("addStudent"),"addStudent()",true)}
-        ${button(t("addSubject"),"addSubject()")}
-      </div>
-
-      <h3>${t("latest")}</h3>
-
-      ${latest.map(l=>{
-        const s=data.subjects.find(x=>x.id===l.subject_id);
-        return `<div class="item">
-          <span>${safe(s?.name)} · ${t("number")} ${l.lesson_number}
-            <div class="small">${safe(l.lesson_date)}</div>
-          </span>
-          ${button(t("open"),`openLesson('${l.id}','history')`)}
-        </div>`;
-      }).join("") || `<p class="muted">${t("emptyLessons")}</p>`}
-    `;
-  }
-
-  // УЧЕНИКИ
-
-  if (page==="students") {
-    app.innerHTML=`
-      <h2>${t("students")}</h2>
-      <p class="muted">${t("total")}: ${data.students.length}</p>
-
-      <div class="actions">
-        ${button(t("addStudent"),"addStudent()",true)}
-      </div>
-
-      ${data.students.map((s,i)=>`
-        <div class="item">
-          <span>${i+1}. ${safe(s.full_name)}</span>
-          <span>
-            ${button(t("edit"),`editStudent('${s.id}')`)}
-            ${button(t("delete"),`deleteStudent('${s.id}')`)}
-          </span>
-        </div>
-      `).join("") || `<p class="muted">${t("emptyStudents")}</p>`}
-    `;
-  }
-
-  // ПРЕДМЕТЫ
-
-  if (page==="subjects") {
-    app.innerHTML=`
-      <h2>${t("subjects")}</h2>
-
-      <div class="actions">
-        ${button(t("addSubject"),"addSubject()",true)}
-      </div>
-
-      ${data.subjects.map(s=>`
-        <div class="item">
-          <span>
-            <b>${safe(s.name)}</b>
-            <div class="small">
-              ${data.lessons.filter(l=>l.subject_id===s.id).length} ${t("lessons")}
-            </div>
-          </span>
-          <span>
-            ${button(t("open"),`openSubject('${s.id}')`)}
-            ${button(t("edit"),`editSubject('${s.id}')`)}
-            ${button(t("delete"),`deleteSubject('${s.id}')`)}
-          </span>
-        </div>
-      `).join("") || `<p class="muted">${t("emptySubjects")}</p>`}
-    `;
-  }
-
-  // СТРАНИЦА ПРЕДМЕТА
-
-  if (page==="subject") {
-    const subject=data.subjects.find(s=>s.id===selectedSubject);
-
-    if (!subject) {
-      page="subjects";
-      render();
-      return;
-    }
-
-    const lessons=data.lessons.filter(
-      l=>l.subject_id===selectedSubject
-    ).sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date));
-
-    app.innerHTML=`
-      ${button(t("back"),"go('subjects')")}
-      <h2>${safe(subject.name)}</h2>
-
-      <div class="card">
-        <strong>${lessons.length}</strong>
-        <span class="muted">${t("lessonCount")}</span>
-      </div>
-
-      <div class="actions">
-        ${button(t("addLesson"),"addLesson()",true)}
-      </div>
-
-      <h3>${t("history")}</h3>
-
-      ${lessons.map(l=>`
-        <div class="item">
-          <span>${t("number")} ${l.lesson_number}
-            <div class="small">${safe(l.lesson_date)}</div>
-          </span>
-          <span>
-            ${button(t("open"),`openLesson('${l.id}','subject')`)}
-            ${button(t("delete"),`deleteLesson('${l.id}')`)}
-          </span>
-        </div>
-      `).join("") || `<p class="muted">${t("emptyLessons")}</p>`}
-    `;
-  }
-
-  // ИСТОРИЯ
-
-  if (page==="history") {
-    app.innerHTML=`
-      <h2>${t("history")}</h2>
-
-      <div class="card">
-        <div class="filters">
-          <div>
-            <label>${t("subject")}</label>
-            <select id="historySubject">
-              <option value="">${t("chooseSubject")}</option>
-              ${data.subjects.map(s=>`
-                <option value="${s.id}" ${historySubject===s.id?"selected":""}>
-                  ${safe(s.name)}
-                </option>
-              `).join("")}
-            </select>
-          </div>
-
-          <div>
-            <label>${t("from")}</label>
-            <input id="historyFrom" type="date" value="${safe(historyFrom)}">
-          </div>
-
-          <div>
-            <label>${t("to")}</label>
-            <input id="historyTo" type="date" value="${safe(historyTo)}">
-          </div>
-        </div>
-
-        <div class="actions">
-          ${button(t("filter"),"applyHistoryFilters()",true)}
-          ${button(t("reset"),"resetHistoryFilters()")}
-        </div>
-      </div>
-
-      ${filteredLessons().map(l=>{
-        const s=data.subjects.find(x=>x.id===l.subject_id);
-        return `<div class="item">
-          <span>
-            <b>${safe(s?.name || "")}</b>
-            <div class="small">${t("number")} ${l.lesson_number} · ${safe(l.lesson_date)}</div>
-          </span>
-          ${button(t("open"),`openLesson('${l.id}','history')`)}
-        </div>`;
-      }).join("") || `<p class="muted">${t("noHistory")}</p>`}
-    `;
-  }
-
-  // ПЕРСОНАЛЬНАЯ СТАТИСТИКА
-
-  if (page==="stats") {
-    const student=data.students.find(s=>s.id===selectedStudent);
-
-    app.innerHTML=`
-      <h2>${t("personalStats")}</h2>
-
-      <label>${t("selectedStudent")}</label>
-      <select id="studentSelect" onchange="selectStudent(this.value)">
-        <option value="">${t("chooseStudent")}</option>
-        ${data.students.map(s=>`
-          <option value="${s.id}" ${selectedStudent===s.id?"selected":""}>
-            ${safe(s.full_name)}
-          </option>
-        `).join("")}
-      </select>
-
-      ${student ? renderStudentStats(student) :
-        `<p class="notice">${t("chooseStudent")}</p>`}
-    `;
-  }
-
-  // СПИСОК ПРОПУСКОВ
-
-  if (page==="absences") {
-    const student=data.students.find(s=>s.id===selectedStudent);
-
-    if (!student) {
-      page="stats";
-      render();
-      return;
-    }
-
-    const records=studentStats(student.id).absences
-      .slice()
-      .sort((a,b)=>
-        a.date.localeCompare(b.date) ||
-        a.number-b.number
-      );
-
-    app.innerHTML=`
-      ${button(t("backToStats"),"backFromAbsences()")}
-
-      <h2>${t("absenceList")}</h2>
-      <p class="muted">${safe(student.full_name)}</p>
-
-      <div class="card">
-        <strong>${records.length}</strong>
-        <span class="muted">${t("absences")}</span>
-      </div>
-
-      ${records.map((r,i)=>`
-        <div class="item absence-item">
-          <span>
-            <b>${t("absenceNumber")} ${i+1}</b>
-            <div class="small">
-              ${safe(r.date.split("-").reverse().join("."))}
-            </div>
-            <div>${safe(r.subject)}</div>
-            <div class="small">${t("number")} ${r.number}</div>
-          </span>
-
-          ${button(
-            t("open"),
-            `openLesson('${r.lessonId}','absences')`
-          )}
-        </div>
-      `).join("") || `
-        <p class="muted">${t("noAbsences")}</p>
-      `}
-    `;
-  }
-
-  // ОТКРЫТОЕ ЗАНЯТИЕ
-
-  if (page==="lesson") {
-    app.innerHTML=lessonView();
-  }
-}
-
-// ==========================================
-// 15. ВЫБОР УЧЕНИКА И СТАТИСТИКА
-// ==========================================
-
-function selectStudent(id) {
-  selectedStudent=id;
-  render();
-}
-
-function renderStudentStats(student) {
-  const st=studentStats(student.id);
-
-  const subjectBlocks=data.subjects.map(subject=>{
-    const stats=studentStats(student.id,subject.id);
-
-    return `
-      <div class="card">
-        <b>${safe(subject.name)}</b>
-        <strong>${stats.percent}%</strong>
-
-        <div class="progress">
-          <div style="width:${stats.percent}%"></div>
-        </div>
-
-        <div class="stat-line">
-          <span>${t("visits")}</span>
-          <b class="present">${stats.present}</b>
-        </div>
-
-        <div class="stat-line">
-          <span>${t("absences")}</span>
-          <b class="absent">${stats.absent}</b>
-        </div>
-
-        <div class="small">${t("marked")}: ${stats.marked}</div>
-      </div>
-    `;
-  }).join("");
-
-  const recordList=records=>records
-    .slice()
-    .sort((a,b)=>b.date.localeCompare(a.date))
-    .map(r=>`
-      <div class="item">
-        <span>
-          <b>${safe(r.subject)}</b>
-          <div class="small">${safe(r.date)} · ${t("number")} ${r.number}</div>
-        </span>
-        ${button(t("open"),`openLesson('${r.lessonId}','stats')`)}
-      </div>
-    `).join("") || `<p class="muted">${t("noMarks")}</p>`;
-
-  return `
-    <h3>${safe(student.full_name)}</h3>
-
-    <div class="cards">
-      <div class="card">
-        <strong>${st.present}</strong>
-        <span class="muted">${t("visits")}</span>
-      </div>
-
-      <div class="card">
-        <strong>${st.absent}</strong>
-        <span class="muted">${t("absences")}</span>
-      </div>
-
-      <div class="card">
-        <strong>${st.percent}%</strong>
-        <span class="muted">${t("percent")}</span>
-      </div>
-
-      <div class="card">
-        <strong>${st.marked}</strong>
-        <span class="muted">${t("marked")}</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <b>${t("attendance")}</b>
-      <div class="progress">
-        <div style="width:${st.percent}%"></div>
-      </div>
-      <span class="small">${st.percent}%</span>
-    </div>
-
-    <h3>${t("subjectStats")}</h3>
-    ${subjectBlocks || `<p class="muted">${t("noSubjects")}</p>`}
-
-    <h3>${t("absenceHistory")}</h3>
-
-    <div class="card">
-      <strong>${st.absent}</strong>
-      <span class="muted">${t("absences")}</span>
-
-      <div class="actions">
-        ${button(t("viewAbsences"),"openAbsences()",true)}
-      </div>
-    </div>
-
-    <h3>${t("presenceHistory")}</h3>
-    ${recordList(st.presences)}
-
-    <div class="actions">
-      ${button(t("export"),"exportExcel()",true)}
-    </div>
-  `;
-}
-
-function openAbsences() {
-  if (!selectedStudent) return;
-  page="absences";
-  render();
-}
-
-// ==========================================
-// 16. ОКНО ЗАНЯТИЯ
-// ==========================================
-
-function lessonView() {
-  const lesson=data.lessons.find(l=>l.id===selectedLesson);
-
-  if (!lesson) {
-    page=lessonReturnPage || "history";
-    render();
-    return "";
-  }
-
-  const subject=data.subjects.find(s=>s.id===lesson.subject_id);
-  const marks=data.attendance[lesson.id] || {};
-
-  return `
-    ${button(t("back"),"backFromLesson()")}
-
-    <h2>${safe(subject?.name || "")}</h2>
-
-    <div class="card">
-      <h3>${t("number")} ${lesson.lesson_number}</h3>
-
-      <label>${t("date")}</label>
-      <input type="date"
-        value="${safe(lesson.lesson_date)}"
-        onchange="changeDate(this.value)">
-
-      <h3>${t("marks")}</h3>
-
-      ${data.students.map((s,i)=>{
-        const mark=marks[s.id];
-
-        const label=mark===true ? t("present") :
-          mark===false ? t("absent") : t("unmarked");
-
-        return `
-          <div class="item">
-            <span>
-              ${i+1}. ${safe(s.full_name)}
-              <div class="small ${
-                mark===true?"present":
-                mark===false?"absent":""
-              }">${label}</div>
-            </span>
-
-            <select style="width:145px;margin:0"
-              onchange="setAttendance('${s.id}',this.value)">
-              <option value="none" ${mark===undefined?"selected":""}>
-                ${t("unmarked")}
-              </option>
-              <option value="present" ${mark===true?"selected":""}>
-                ${t("was")}
-              </option>
-              <option value="absent" ${mark===false?"selected":""}>
-                ${t("wasNot")}
-              </option>
-            </select>
-          </div>
-        `;
-      }).join("") || `<p class="muted">${t("noStudents")}</p>`}
-    </div>
-  `;
-}
-
-// ==========================================
-// 17. ЗАПУСК
-// ==========================================
-
-document.querySelectorAll("nav button[data-page]").forEach(b=>{
-  b.addEventListener("click",()=>go(b.dataset.page));
-});
-
-db.auth.onAuthStateChange((event,session)=>{
-  if (event==="SIGNED_OUT") {
-    data={
-      students:[],
-      subjects:[],
-      lessons:[],
-      attendance:{}
-    };
-
-    document.getElementById("journal").classList.add("hidden");
-    document.getElementById("auth").classList.remove("hidden");
-  }
-});
-
+document.querySelectorAll("nav button[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
 updateStaticText();
+initTelegram();
 checkAuth();
-
 </script>
 </body>
 </html>
-```
