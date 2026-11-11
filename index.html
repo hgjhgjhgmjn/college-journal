@@ -6,145 +6,137 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>College Journal</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 <style>
 :root {
-  --bg: #101116;
-  --panel: #191b24;
-  --panel2: #222531;
-  --text: #f2f2f7;
-  --muted: #9295a5;
-  --accent: #8b7cf6;
-  --green: #35c98a;
-  --red: #ed6577;
-  --border: #303341;
+  --bg:#101116;
+  --panel:#191b24;
+  --panel2:#222531;
+  --text:#f2f2f7;
+  --muted:#9295a5;
+  --accent:#8b7cf6;
+  --green:#35c98a;
+  --red:#ed6577;
+  --border:#303341;
 }
-* { box-sizing: border-box; }
+* {box-sizing:border-box}
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,sans-serif;
 }
-header {
-  padding: 22px;
-  border-bottom: 1px solid var(--border);
-}
-header h1 { margin: 0; font-size: 23px; }
-header p { color: var(--muted); margin-bottom: 0; }
+header {padding:22px;border-bottom:1px solid var(--border)}
+header h1 {margin:0;font-size:23px}
+header p {color:var(--muted);margin-bottom:0}
 nav {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
-  overflow-x: auto;
-  background: var(--panel);
+  display:flex;gap:8px;padding:12px;overflow-x:auto;
+  background:var(--panel)
 }
-nav button, button {
-  border: 0;
-  border-radius: 10px;
-  padding: 11px 15px;
-  background: var(--panel2);
-  color: var(--text);
-  cursor: pointer;
+button {
+  border:0;border-radius:10px;padding:11px 15px;
+  background:var(--panel2);color:var(--text);cursor:pointer;
 }
-nav button.active, .primary {
-  background: var(--accent);
-  color: white;
-}
-main {
-  max-width: 850px;
-  margin: auto;
-  padding: 20px;
-}
-h2 { font-size: 21px; }
-.muted { color: var(--muted); }
+nav button.active,.primary {background:var(--accent);color:white}
+main {max-width:900px;margin:auto;padding:20px}
+h2 {font-size:21px}
+.muted,.small {color:var(--muted)}
+.small {font-size:12px}
 .cards {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 12px;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px
 }
-.card, .item {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 12px;
+.card,.item {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:14px;padding:16px;margin-bottom:12px
 }
-.card strong { font-size: 27px; display: block; }
+.card strong {font-size:27px;display:block;margin:7px 0}
 .item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px
 }
-.item button { flex-shrink: 0; }
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 15px 0;
+.actions {display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+input,select {
+  background:var(--panel2);border:1px solid var(--border);
+  color:white;padding:12px;border-radius:9px;
+  width:100%;margin:7px 0 12px
 }
-input, select {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  color: white;
-  padding: 12px;
-  border-radius: 9px;
-  width: 100%;
-  margin: 7px 0 12px;
-}
-label { color: var(--muted); font-size: 13px; }
-.present { color: var(--green); }
-.absent { color: var(--red); }
-.student-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 13px;
-  background: var(--panel);
-  border-radius: 10px;
-  margin: 8px 0;
-}
-.student-row button { min-width: 105px; }
-.small { font-size: 12px; color: var(--muted); }
+label {color:var(--muted);font-size:13px}
+.present {color:var(--green)}
+.absent {color:var(--red)}
 .progress {
-  height: 9px;
-  background: var(--panel2);
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 10px 0;
+  height:9px;background:var(--panel2);
+  border-radius:10px;overflow:hidden;margin:10px 0
 }
-.progress div {
-  height: 100%;
-  background: var(--green);
+.progress div {height:100%;background:var(--green)}
+.hidden {display:none}
+.auth {
+  max-width:400px;margin:50px auto;padding:22px;
+  background:var(--panel);border-radius:16px;
+  border:1px solid var(--border)
 }
-.hidden { display: none; }
+.notice {
+  background:var(--panel2);padding:12px;
+  border-radius:10px;margin:12px 0
+}
+button:disabled {opacity:.5;cursor:not-allowed}
 @media(max-width:500px) {
-  main { padding: 14px; }
-  .item { align-items: flex-start; }
+  main {padding:14px}
+  .item {align-items:flex-start}
 }
 </style>
 </head>
 
 <body>
+
 <header>
   <h1>College Journal</h1>
-  <p>Электронный журнал посещаемости</p>
+  <p>Личный электронный журнал посещаемости</p>
 </header>
 
+<div id="auth" class="auth hidden">
+  <h2>Вход в журнал</h2>
+  <p class="muted">Войди в свой личный аккаунт</p>
+  <form onsubmit="login(event)">
+    <label>Email</label>
+    <input id="email" type="email" required>
+    <label>Пароль</label>
+    <input id="password" type="password" required>
+    <button class="primary" type="submit">Войти</button>
+  </form>
+  <p id="authMessage" class="small"></p>
+</div>
+
+<div id="journal" class="hidden">
 <nav>
-  <button class="active" data-page="home">Главная</button>
+  <button data-page="home">Главная</button>
   <button data-page="students">Ученики</button>
   <button data-page="subjects">Предметы</button>
   <button data-page="stats">Статистика</button>
+  <button onclick="logout()">Выйти</button>
 </nav>
-
-<main id="app"></main>
+<main id="app">
+  <p class="muted">Загрузка журнала...</p>
+</main>
+</div>
 
 <script>
-const KEY = "collegeJournalData";
+// ==========================================
+// 1. НАСТРОЙКИ SUPABASE
+// ==========================================
 
-let data = JSON.parse(localStorage.getItem(KEY) || "null") || {
+const SUPABASE_URL = "https://hgjhgjhgmjn.github.io/college-journal/";
+const SUPABASE_KEY = "sb_publishable_7ARoVY3d5W1GgT9a9eVLbQ_G_IP_UwF";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+// ==========================================
+// 2. ДАННЫЕ И СОСТОЯНИЕ
+// ==========================================
+
+let data = {
   students: [],
   subjects: [],
   lessons: [],
@@ -154,20 +146,28 @@ let data = JSON.parse(localStorage.getItem(KEY) || "null") || {
 let page = "home";
 let selectedSubject = null;
 let selectedLesson = null;
+let busy = false;
 
-function save() {
-  localStorage.setItem(KEY, JSON.stringify(data));
-}
+const app = document.getElementById("app");
 
 function safe(value) {
-  return String(value).replace(/[&<>"']/g, c => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;",
-    '"':"&quot;", "'":"&#39;"
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
   })[c]);
 }
 
-function id() {
-  return crypto.randomUUID();
+function localDate() {
+  const d = new Date();
+  return [
+    d.getFullYear(),
+    String(d.getMonth()+1).padStart(2,"0"),
+    String(d.getDate()).padStart(2,"0")
+  ].join("-");
+}
+
+function notify(message) {
+  alert(message);
 }
 
 function button(text, action, primary=false) {
@@ -175,146 +175,432 @@ function button(text, action, primary=false) {
     onclick="${action}">${text}</button>`;
 }
 
-function go(p) {
-  page = p;
-  selectedSubject = null;
-  selectedLesson = null;
+function setBusy(value) {
+  busy = value;
+  document.querySelectorAll("button").forEach(b=>{
+    b.disabled = value;
+  });
+}
+
+async function run(action) {
+  if (busy) return;
+  setBusy(true);
+  try {
+    await action();
+  } catch(error) {
+    console.error(error);
+    notify("Ошибка: " + (error.message || error));
+  } finally {
+    setBusy(false);
+  }
+}
+
+// ==========================================
+// 3. АВТОРИЗАЦИЯ
+// ==========================================
+
+async function login(event) {
+  event.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("authMessage");
+
+  message.textContent = "Выполняется вход...";
+
+  const {error} = await db.auth.signInWithPassword({
+    email,password
+  });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  await startJournal();
+}
+
+async function logout() {
+  await db.auth.signOut();
+  location.reload();
+}
+
+async function startJournal() {
+  document.getElementById("auth").classList.add("hidden");
+  document.getElementById("journal").classList.remove("hidden");
+  await loadData();
+}
+
+async function checkAuth() {
+  if (
+    SUPABASE_URL.includes("ВСТАВЬ") ||
+    SUPABASE_KEY.includes("ВСТАВЬ")
+  ) {
+    document.getElementById("auth").classList.remove("hidden");
+    document.getElementById("authMessage").textContent =
+      "Сначала вставь API URL и Publishable key в код.";
+    return;
+  }
+
+  const {data:result,error} = await db.auth.getSession();
+
+  if (error) {
+    notify(error.message);
+    return;
+  }
+
+  if (result.session) {
+    await startJournal();
+  } else {
+    document.getElementById("auth").classList.remove("hidden");
+  }
+}
+
+// ==========================================
+// 4. ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
+// ==========================================
+
+async function loadData() {
+  app.innerHTML = '<p class="muted">Загрузка данных...</p>';
+
+  const [students,subjects,lessons,attendance] = await Promise.all([
+    db.from("students").select("*").order("full_name"),
+    db.from("subjects").select("*").order("name"),
+    db.from("lessons").select("*").order("lesson_date"),
+    db.from("attendance").select("*")
+  ]);
+
+  for (const result of [students,subjects,lessons,attendance]) {
+    if (result.error) throw result.error;
+  }
+
+  data.students = students.data;
+  data.subjects = subjects.data;
+  data.lessons = lessons.data;
+
+  data.attendance = {};
+
+  attendance.data.forEach(mark=>{
+    if (!data.attendance[mark.lesson_id]) {
+      data.attendance[mark.lesson_id] = {};
+    }
+    data.attendance[mark.lesson_id][mark.student_id] =
+      mark.is_present;
+  });
+
   render();
 }
 
-function addStudent() {
+// ==========================================
+// 5. УЧЕНИКИ
+// ==========================================
+
+async function addStudent() {
   const name = prompt("Введите имя и фамилию ученика:");
   if (!name || !name.trim()) return;
-  data.students.push({id:id(), name:name.trim()});
-  save();
-  render();
+
+  await run(async()=>{
+    const {error} = await db.from("students").insert({
+      full_name:name.trim()
+    });
+    if (error) throw error;
+    await loadData();
+  });
 }
 
-function deleteStudent(studentId) {
-  if (!confirm("Удалить ученика из списка?")) return;
-  data.students = data.students.filter(s => s.id !== studentId);
-  save();
-  render();
+async function editStudent(studentId) {
+  const student = data.students.find(s=>s.id===studentId);
+  if (!student) return;
+
+  const name = prompt("Изменить имя ученика:",student.full_name);
+  if (!name || !name.trim()) return;
+
+  await run(async()=>{
+    const {error} = await db.from("students")
+      .update({full_name:name.trim()}).eq("id",studentId);
+    if (error) throw error;
+    await loadData();
+  });
 }
 
-function addSubject() {
+async function deleteStudent(studentId) {
+  if (!confirm("Удалить ученика и его отметки?")) return;
+
+  await run(async()=>{
+    const {error:markError} = await db.from("attendance")
+      .delete().eq("student_id",studentId);
+    if (markError) throw markError;
+
+    const {error} = await db.from("students")
+      .delete().eq("id",studentId);
+    if (error) throw error;
+
+    await loadData();
+  });
+}
+
+// ==========================================
+// 6. ПРЕДМЕТЫ
+// ==========================================
+
+async function addSubject() {
   const name = prompt("Введите название предмета:");
   if (!name || !name.trim()) return;
-  data.subjects.push({id:id(), name:name.trim()});
-  save();
-  render();
+
+  await run(async()=>{
+    const {error} = await db.from("subjects").insert({
+      name:name.trim()
+    });
+    if (error) throw error;
+    await loadData();
+  });
 }
 
-function deleteSubject(subjectId) {
-  if (!confirm("Удалить предмет и его занятия?")) return;
-  const lessonIds = data.lessons
-    .filter(l => l.subjectId === subjectId).map(l => l.id);
-  data.lessons = data.lessons.filter(l => l.subjectId !== subjectId);
-  lessonIds.forEach(id => delete data.attendance[id]);
-  data.subjects = data.subjects.filter(s => s.id !== subjectId);
-  save();
-  render();
+async function editSubject(subjectId) {
+  const subject = data.subjects.find(s=>s.id===subjectId);
+  if (!subject) return;
+
+  const name = prompt("Изменить название:",subject.name);
+  if (!name || !name.trim()) return;
+
+  await run(async()=>{
+    const {error} = await db.from("subjects")
+      .update({name:name.trim()}).eq("id",subjectId);
+    if (error) throw error;
+    await loadData();
+  });
 }
 
-function openSubject(subjectId) {
-  selectedSubject = subjectId;
-  selectedLesson = null;
-  page = "subject";
-  render();
+async function deleteSubject(subjectId) {
+  if (!confirm("Удалить предмет, все его занятия и отметки?")) return;
+
+  await run(async()=>{
+    const lessons = data.lessons.filter(
+      l=>l.subject_id===subjectId
+    );
+
+    for (const lesson of lessons) {
+      const {error:markError} = await db.from("attendance")
+        .delete().eq("lesson_id",lesson.id);
+      if (markError) throw markError;
+
+      const {error:lessonError} = await db.from("lessons")
+        .delete().eq("id",lesson.id);
+      if (lessonError) throw lessonError;
+    }
+
+    const {error} = await db.from("subjects")
+      .delete().eq("id",subjectId);
+    if (error) throw error;
+
+    selectedSubject = null;
+    selectedLesson = null;
+    await loadData();
+  });
 }
 
-function addLesson() {
+// ==========================================
+// 7. ЗАНЯТИЯ
+// ==========================================
+
+async function addLesson() {
+  const subjectId = selectedSubject;
   const previous = data.lessons.filter(
-    l => l.subjectId === selectedSubject
-  ).length;
-  const lesson = {
-    id:id(),
-    subjectId:selectedSubject,
-    number:previous+1,
-    date:new Date().toLocaleDateString("en-CA")
-  };
-  data.lessons.push(lesson);
-  data.attendance[lesson.id] = {};
-  selectedLesson = lesson.id;
-  save();
-  render();
-}
-
-function openLesson(lessonId) {
-  selectedLesson = lessonId;
-  render();
-}
-
-function toggleAttendance(studentId) {
-  const marks = data.attendance[selectedLesson] || {};
-  marks[studentId] = marks[studentId] === true ? false : true;
-  data.attendance[selectedLesson] = marks;
-  save();
-  render();
-}
-
-function attendanceStats(subjectId, studentId=null) {
-  const lessons = data.lessons.filter(
-    l => !subjectId || l.subjectId === subjectId
+    l=>l.subject_id===subjectId
   );
-  let present = 0;
-  let marked = 0;
-  lessons.forEach(l => {
-    const marks = data.attendance[l.id] || {};
-    const ids = studentId ? [studentId] : data.students.map(s=>s.id);
-    ids.forEach(sid => {
-      if (marks[sid] !== undefined) {
-        marked++;
-        if (marks[sid] === true) present++;
-      }
+
+  const number = previous.length
+    ? Math.max(...previous.map(l=>l.lesson_number))+1
+    : 1;
+
+  await run(async()=>{
+    const {data:lesson,error} = await db.from("lessons")
+      .insert({
+        subject_id:subjectId,
+        lesson_number:number,
+        lesson_date:localDate()
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    selectedLesson = lesson.id;
+    await loadData();
+  });
+}
+
+async function changeDate(value) {
+  if (!value) return;
+
+  await run(async()=>{
+    const {error} = await db.from("lessons")
+      .update({lesson_date:value}).eq("id",selectedLesson);
+
+    if (error) throw error;
+    await loadData();
+  });
+}
+
+async function deleteLesson(lessonId) {
+  if (!confirm("Удалить занятие и все его отметки?")) return;
+
+  await run(async()=>{
+    const {error:markError} = await db.from("attendance")
+      .delete().eq("lesson_id",lessonId);
+    if (markError) throw markError;
+
+    const {error} = await db.from("lessons")
+      .delete().eq("id",lessonId);
+    if (error) throw error;
+
+    selectedLesson = null;
+    await loadData();
+  });
+}
+
+// ==========================================
+// 8. ПОСЕЩАЕМОСТЬ
+// ==========================================
+
+async function setAttendance(studentId,value) {
+  await run(async()=>{
+    if (value === "none") {
+      const {error} = await db.from("attendance")
+        .delete()
+        .eq("lesson_id",selectedLesson)
+        .eq("student_id",studentId);
+      if (error) throw error;
+    } else {
+      const {error} = await db.from("attendance")
+        .upsert({
+          lesson_id:selectedLesson,
+          student_id:studentId,
+          is_present:value==="present"
+        },{onConflict:"lesson_id,student_id"});
+
+      if (error) throw error;
+    }
+
+    await loadData();
+  });
+}
+
+// ==========================================
+// 9. СТАТИСТИКА
+// ==========================================
+
+function attendanceStats(subjectId=null,studentId=null) {
+  const lessons = data.lessons.filter(
+    l=>!subjectId || l.subject_id===subjectId
+  );
+
+  let present=0,absent=0,marked=0;
+
+  lessons.forEach(lesson=>{
+    const marks = data.attendance[lesson.id] || {};
+
+    const ids = studentId
+      ? [studentId]
+      : data.students.map(s=>s.id);
+
+    ids.forEach(id=>{
+      const mark=marks[id];
+
+      if (mark === undefined) return;
+
+      marked++;
+      if (mark === true) present++;
+      else absent++;
     });
   });
+
   return {
-    present, marked,
-    percent: marked ? Math.round(present/marked*100) : 0
+    present,
+    absent,
+    marked,
+    percent:marked ? Math.round(present/marked*100) : 0
   };
 }
 
-function exportCSV() {
-  const rows = [["Предмет","Пара","Дата","Ученик","Посещение"]];
-  data.lessons.forEach(l => {
-    const subject = data.subjects.find(s=>s.id===l.subjectId);
-    data.students.forEach(s => {
-      const mark = data.attendance[l.id]?.[s.id];
+// ==========================================
+// 10. НАВИГАЦИЯ
+// ==========================================
+
+function go(p) {
+  page=p;
+  selectedSubject=null;
+  selectedLesson=null;
+  render();
+}
+
+function openSubject(id) {
+  selectedSubject=id;
+  selectedLesson=null;
+  page="subject";
+  render();
+}
+
+function openLesson(id) {
+  selectedLesson=id;
+  render();
+}
+
+// ==========================================
+// 11. ЭКСПОРТ EXCEL
+// ==========================================
+
+function exportExcel() {
+  const rows = [[
+    "Предмет","Номер занятия","Дата",
+    "Ученик","Посещение"
+  ]];
+
+  data.lessons.forEach(lesson=>{
+    const subject=data.subjects.find(
+      s=>s.id===lesson.subject_id
+    );
+
+    data.students.forEach(student=>{
+      const mark=data.attendance[lesson.id]?.[student.id];
+
       rows.push([
         subject?.name || "",
-        l.number,
-        l.date,
-        s.name,
-        mark === true ? "Присутствовал" :
-        mark === false ? "Отсутствовал" : "Не отмечено"
+        lesson.lesson_number,
+        lesson.lesson_date,
+        student.full_name,
+        mark===true ? "Присутствовал" :
+        mark===false ? "Отсутствовал" : "Не отмечено"
       ]);
     });
   });
-  const csv = "\uFEFF" + rows.map(row =>
-    row.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(";")
-  ).join("\n");
-  const file = new Blob([csv], {type:"text/csv;charset=utf-8;"});
-  const url = URL.createObjectURL(file);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "college-journal.csv";
-  a.click();
-  URL.revokeObjectURL(url);
+
+  const workbook=XLSX.utils.book_new();
+  const sheet=XLSX.utils.aoa_to_sheet(rows);
+
+  XLSX.utils.book_append_sheet(workbook,sheet,"Посещаемость");
+  XLSX.writeFile(workbook,"College-Journal.xlsx");
 }
 
+// ==========================================
+// 12. ОТОБРАЖЕНИЕ СТРАНИЦ
+// ==========================================
+
 function render() {
-  document.querySelectorAll("nav button").forEach(b =>
-    b.classList.toggle("active", b.dataset.page === page ||
-      (page === "subject" && b.dataset.page === "subjects"))
-  );
+  document.querySelectorAll("nav button[data-page]").forEach(b=>{
+    b.classList.toggle("active",
+      b.dataset.page===page ||
+      (page==="subject" && b.dataset.page==="subjects")
+    );
+  });
 
-  const app = document.getElementById("app");
+  if (page==="home") {
+    const st=attendanceStats();
 
-  if (page === "home") {
-    app.innerHTML = `
+    app.innerHTML=`
       <h2>Главная</h2>
-      <p class="muted">Твой журнал посещаемости</p>
+      <p class="muted">Твой электронный журнал</p>
+
       <div class="cards">
         <div class="card"><strong>${data.students.length}</strong>
           <span class="muted">Учеников</span></div>
@@ -322,152 +608,254 @@ function render() {
           <span class="muted">Предметов</span></div>
         <div class="card"><strong>${data.lessons.length}</strong>
           <span class="muted">Проведено пар</span></div>
-        <div class="card"><strong>${attendanceStats().percent}%</strong>
+        <div class="card"><strong>${st.absent}</strong>
+          <span class="muted">Всего пропусков</span></div>
+        <div class="card"><strong>${st.percent}%</strong>
           <span class="muted">Посещаемость</span></div>
+        <div class="card"><strong>${st.present}</strong>
+          <span class="muted">Присутствий</span></div>
       </div>
+
       <div class="actions">
-        ${button("Добавить ученика","addStudent()",true)}
-        ${button("Добавить предмет","addSubject()")}
+        ${button("+ Ученик","addStudent()",true)}
+        ${button("+ Предмет","addSubject()")}
       </div>
+
       <h2>Последние занятия</h2>
-      ${data.lessons.slice().reverse().slice(0,5).map(l => {
-        const s=data.subjects.find(x=>x.id===l.subjectId);
+      ${data.lessons.slice().reverse().slice(0,5).map(l=>{
+        const s=data.subjects.find(x=>x.id===l.subject_id);
         return `<div class="item">
-          <span>${safe(s?.name || "Предмет")} · №${l.number}
-          <div class="small">${safe(l.date)}</div></span>
+          <span>${safe(s?.name)} · №${l.lesson_number}
+          <div class="small">${safe(l.lesson_date)}</div></span>
+          ${button("Открыть",`openSubject('${l.subject_id}')`)}
         </div>`;
       }).join("") || '<p class="muted">Занятий пока нет.</p>'}
     `;
   }
 
-  if (page === "students") {
-    app.innerHTML = `
+  if (page==="students") {
+    app.innerHTML=`
       <h2>Ученики</h2>
       <p class="muted">Всего: ${data.students.length}</p>
-      <div class="actions">${button("+ Добавить ученика","addStudent()",true)}</div>
+      <div class="actions">
+        ${button("+ Добавить ученика","addStudent()",true)}
+      </div>
+
       ${data.students.map((s,i)=>`
         <div class="item">
-          <span>${i+1}. ${safe(s.name)}</span>
-          <span>${button("Удалить",`deleteStudent('${s.id}')`)}</span>
+          <span>${i+1}. ${safe(s.full_name)}</span>
+          <span>
+            ${button("Изменить",`editStudent('${s.id}')`)}
+            ${button("Удалить",`deleteStudent('${s.id}')`)}
+          </span>
         </div>
-      `).join("") || '<p class="muted">Список пока пуст.</p>'}
+      `).join("") || '<p class="muted">Список пуст.</p>'}
     `;
   }
 
-  if (page === "subjects") {
-    app.innerHTML = `
+  if (page==="subjects") {
+    app.innerHTML=`
       <h2>Предметы</h2>
-      <div class="actions">${button("+ Добавить предмет","addSubject()",true)}</div>
+      <div class="actions">
+        ${button("+ Добавить предмет","addSubject()",true)}
+      </div>
+
       ${data.subjects.map(s=>`
         <div class="item">
-          <span onclick="openSubject('${s.id}')" style="cursor:pointer">
+          <span>
             <b>${safe(s.name)}</b>
-            <div class="small">${data.lessons.filter(l=>l.subjectId===s.id).length} занятий</div>
+            <div class="small">
+              ${data.lessons.filter(l=>l.subject_id===s.id).length} занятий
+            </div>
           </span>
-          <span>${button("Открыть",`openSubject('${s.id}')`)}
-          ${button("Удалить",`deleteSubject('${s.id}')`)}</span>
+          <span>
+            ${button("Открыть",`openSubject('${s.id}')`)}
+            ${button("Изменить",`editSubject('${s.id}')`)}
+            ${button("Удалить",`deleteSubject('${s.id}')`)}
+          </span>
         </div>
       `).join("") || '<p class="muted">Добавь первый предмет.</p>'}
     `;
   }
 
-  if (page === "subject") {
+  if (page==="subject") {
     const subject=data.subjects.find(s=>s.id===selectedSubject);
-    if (!subject) { go("subjects"); return; }
-    const lessons=data.lessons.filter(l=>l.subjectId===selectedSubject);
-    const stats=attendanceStats(selectedSubject);
+    if (!subject) {go("subjects");return;}
 
-    app.innerHTML = `
+    const lessons=data.lessons.filter(
+      l=>l.subject_id===selectedSubject
+    );
+
+    const st=attendanceStats(selectedSubject);
+
+    app.innerHTML=`
       ${button("← Предметы","go('subjects')")}
       <h2>${safe(subject.name)}</h2>
+
       <div class="cards">
         <div class="card"><strong>${lessons.length}</strong>
           <span class="muted">Всего пар</span></div>
-        <div class="card"><strong>${stats.percent}%</strong>
+        <div class="card"><strong>${st.absent}</strong>
+          <span class="muted">Пропусков</span></div>
+        <div class="card"><strong>${st.percent}%</strong>
           <span class="muted">Посещаемость</span></div>
       </div>
+
       <div class="actions">
         ${button("+ Новая пара","addLesson()",true)}
       </div>
+
       <h3>Занятия</h3>
+
       ${lessons.slice().reverse().map(l=>`
         <div class="item">
-          <span>Пара №${l.number}
-          <div class="small">${safe(l.date)}</div></span>
-          ${button("Открыть",`openLesson('${l.id}')`)}
+          <span>Пара №${l.lesson_number}
+            <div class="small">${safe(l.lesson_date)}</div>
+          </span>
+          <span>
+            ${button("Открыть",`openLesson('${l.id}')`)}
+            ${button("Удалить",`deleteLesson('${l.id}')`)}
+          </span>
         </div>
       `).join("") || '<p class="muted">Занятий пока нет.</p>'}
+
       ${selectedLesson ? lessonView() : ""}
     `;
   }
 
-  if (page === "stats") {
-    app.innerHTML = `
-      <h2>Статистика</h2>
+  if (page==="stats") {
+    const total=attendanceStats();
+
+    app.innerHTML=`
+      <h2>Общая статистика</h2>
+
+      <div class="cards">
+        <div class="card"><strong>${total.absent}</strong>
+          <span class="muted">Всего пропусков</span></div>
+        <div class="card"><strong>${total.present}</strong>
+          <span class="muted">Присутствий</span></div>
+        <div class="card"><strong>${total.percent}%</strong>
+          <span class="muted">Посещаемость</span></div>
+        <div class="card"><strong>${total.marked}</strong>
+          <span class="muted">Всего отметок</span></div>
+      </div>
+
+      <h3>По ученикам</h3>
+
       ${data.students.map(s=>{
         const st=attendanceStats(null,s.id);
-        return `<div class="card">
-          <b>${safe(s.name)}</b>
-          <strong>${st.percent}%</strong>
-          <div class="progress"><div style="width:${st.percent}%"></div></div>
-          <span class="small">Присутствовал: ${st.present} из ${st.marked} отметок</span>
-        </div>`;
+        return `
+          <div class="card">
+            <b>${safe(s.full_name)}</b>
+            <strong>${st.percent}%</strong>
+            <div class="progress">
+              <div style="width:${st.percent}%"></div>
+            </div>
+            <span class="small">
+              Присутствовал: ${st.present} ·
+              Пропустил: ${st.absent}
+            </span>
+          </div>
+        `;
       }).join("") || '<p class="muted">Добавь учеников.</p>'}
+
       <h3>По предметам</h3>
+
       ${data.subjects.map(s=>{
         const st=attendanceStats(s.id);
-        return `<div class="card">
-          <b>${safe(s.name)}</b>
-          <strong>${st.percent}%</strong>
-          <div class="progress"><div style="width:${st.percent}%"></div></div>
-        </div>`;
+        return `
+          <div class="card">
+            <b>${safe(s.name)}</b>
+            <strong>${st.percent}%</strong>
+            <div class="progress">
+              <div style="width:${st.percent}%"></div>
+            </div>
+            <span class="small">
+              Присутствий: ${st.present} ·
+              Пропусков: ${st.absent}
+            </span>
+          </div>
+        `;
       }).join("")}
-      <div class="actions">${button("Экспорт CSV для Excel","exportCSV()",true)}</div>
+
+      <div class="actions">
+        ${button("Экспорт в Excel (.xlsx)","exportExcel()",true)}
+      </div>
     `;
   }
 }
 
+// ==========================================
+// 13. ОКНО ЗАНЯТИЯ И ОТМЕТКИ
+// ==========================================
+
 function lessonView() {
   const lesson=data.lessons.find(l=>l.id===selectedLesson);
   if (!lesson) return "";
+
   const marks=data.attendance[lesson.id] || {};
+
   return `
     <div class="card">
-      <h3>Пара №${lesson.number}</h3>
+      <h3>Пара №${lesson.lesson_number}</h3>
+
       <label>Дата занятия</label>
-      <input type="date" value="${lesson.date}"
+      <input type="date" value="${safe(lesson.lesson_date)}"
         onchange="changeDate(this.value)">
+
       <h3>Отметки учеников</h3>
+
       ${data.students.map((s,i)=>{
         const mark=marks[s.id];
-        const label=mark===true ? "Был" :
-          mark===false ? "Не был" : "Не отмечен";
-        return `<div class="student-row">
-          <span>${i+1}. ${safe(s.name)}
-            <div class="small ${mark===true?'present':mark===false?'absent':''}">${label}</div>
-          </span>
-          ${button(mark===true?"Был ✓":mark===false?"Не был":"Отметить",
-            `toggleAttendance('${s.id}')`,
-            mark===true)}
-        </div>`;
+
+        const label=mark===true ? "Присутствовал" :
+          mark===false ? "Отсутствовал" : "Не отмечен";
+
+        return `
+          <div class="item">
+            <span>${i+1}. ${safe(s.full_name)}
+              <div class="small ${
+                mark===true?"present":
+                mark===false?"absent":""
+              }">${label}</div>
+            </span>
+
+            <select
+              style="width:145px;margin:0"
+              onchange="setAttendance('${s.id}',this.value)">
+              <option value="none" ${mark===undefined?"selected":""}>
+                Не отмечен
+              </option>
+              <option value="present" ${mark===true?"selected":""}>
+                Был
+              </option>
+              <option value="absent" ${mark===false?"selected":""}>
+                Не был
+              </option>
+            </select>
+          </div>
+        `;
       }).join("") || '<p class="muted">Сначала добавь учеников.</p>'}
     </div>
   `;
 }
 
-function changeDate(value) {
-  const lesson=data.lessons.find(l=>l.id===selectedLesson);
-  if (lesson && value) {
-    lesson.date=value;
-    save();
+// ==========================================
+// 14. ЗАПУСК
+// ==========================================
+
+document.querySelectorAll("nav button[data-page]").forEach(b=>{
+  b.addEventListener("click",()=>go(b.dataset.page));
+});
+
+db.auth.onAuthStateChange((event,session)=>{
+  if (event==="SIGNED_OUT") {
+    document.getElementById("journal").classList.add("hidden");
+    document.getElementById("auth").classList.remove("hidden");
   }
-}
+});
 
-document.querySelectorAll("nav button").forEach(b =>
-  b.addEventListener("click",()=>go(b.dataset.page))
-);
-
-render();
+checkAuth();
 </script>
 </body>
 </html>
