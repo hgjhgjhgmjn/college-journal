@@ -1,0 +1,473 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>College Journal</title>
+
+<style>
+:root {
+  --bg: #101116;
+  --panel: #191b24;
+  --panel2: #222531;
+  --text: #f2f2f7;
+  --muted: #9295a5;
+  --accent: #8b7cf6;
+  --green: #35c98a;
+  --red: #ed6577;
+  --border: #303341;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+header {
+  padding: 22px;
+  border-bottom: 1px solid var(--border);
+}
+header h1 { margin: 0; font-size: 23px; }
+header p { color: var(--muted); margin-bottom: 0; }
+nav {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  overflow-x: auto;
+  background: var(--panel);
+}
+nav button, button {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 15px;
+  background: var(--panel2);
+  color: var(--text);
+  cursor: pointer;
+}
+nav button.active, .primary {
+  background: var(--accent);
+  color: white;
+}
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 20px;
+}
+h2 { font-size: 21px; }
+.muted { color: var(--muted); }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+.card, .item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card strong { font-size: 27px; display: block; }
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.item button { flex-shrink: 0; }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 15px 0;
+}
+input, select {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: white;
+  padding: 12px;
+  border-radius: 9px;
+  width: 100%;
+  margin: 7px 0 12px;
+}
+label { color: var(--muted); font-size: 13px; }
+.present { color: var(--green); }
+.absent { color: var(--red); }
+.student-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  background: var(--panel);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+.student-row button { min-width: 105px; }
+.small { font-size: 12px; color: var(--muted); }
+.progress {
+  height: 9px;
+  background: var(--panel2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+.progress div {
+  height: 100%;
+  background: var(--green);
+}
+.hidden { display: none; }
+@media(max-width:500px) {
+  main { padding: 14px; }
+  .item { align-items: flex-start; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>College Journal</h1>
+  <p>Электронный журнал посещаемости</p>
+</header>
+
+<nav>
+  <button class="active" data-page="home">Главная</button>
+  <button data-page="students">Ученики</button>
+  <button data-page="subjects">Предметы</button>
+  <button data-page="stats">Статистика</button>
+</nav>
+
+<main id="app"></main>
+
+<script>
+const KEY = "collegeJournalData";
+
+let data = JSON.parse(localStorage.getItem(KEY) || "null") || {
+  students: [],
+  subjects: [],
+  lessons: [],
+  attendance: {}
+};
+
+let page = "home";
+let selectedSubject = null;
+let selectedLesson = null;
+
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(data));
+}
+
+function safe(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  })[c]);
+}
+
+function id() {
+  return crypto.randomUUID();
+}
+
+function button(text, action, primary=false) {
+  return `<button class="${primary ? "primary" : ""}"
+    onclick="${action}">${text}</button>`;
+}
+
+function go(p) {
+  page = p;
+  selectedSubject = null;
+  selectedLesson = null;
+  render();
+}
+
+function addStudent() {
+  const name = prompt("Введите имя и фамилию ученика:");
+  if (!name || !name.trim()) return;
+  data.students.push({id:id(), name:name.trim()});
+  save();
+  render();
+}
+
+function deleteStudent(studentId) {
+  if (!confirm("Удалить ученика из списка?")) return;
+  data.students = data.students.filter(s => s.id !== studentId);
+  save();
+  render();
+}
+
+function addSubject() {
+  const name = prompt("Введите название предмета:");
+  if (!name || !name.trim()) return;
+  data.subjects.push({id:id(), name:name.trim()});
+  save();
+  render();
+}
+
+function deleteSubject(subjectId) {
+  if (!confirm("Удалить предмет и его занятия?")) return;
+  const lessonIds = data.lessons
+    .filter(l => l.subjectId === subjectId).map(l => l.id);
+  data.lessons = data.lessons.filter(l => l.subjectId !== subjectId);
+  lessonIds.forEach(id => delete data.attendance[id]);
+  data.subjects = data.subjects.filter(s => s.id !== subjectId);
+  save();
+  render();
+}
+
+function openSubject(subjectId) {
+  selectedSubject = subjectId;
+  selectedLesson = null;
+  page = "subject";
+  render();
+}
+
+function addLesson() {
+  const previous = data.lessons.filter(
+    l => l.subjectId === selectedSubject
+  ).length;
+  const lesson = {
+    id:id(),
+    subjectId:selectedSubject,
+    number:previous+1,
+    date:new Date().toLocaleDateString("en-CA")
+  };
+  data.lessons.push(lesson);
+  data.attendance[lesson.id] = {};
+  selectedLesson = lesson.id;
+  save();
+  render();
+}
+
+function openLesson(lessonId) {
+  selectedLesson = lessonId;
+  render();
+}
+
+function toggleAttendance(studentId) {
+  const marks = data.attendance[selectedLesson] || {};
+  marks[studentId] = marks[studentId] === true ? false : true;
+  data.attendance[selectedLesson] = marks;
+  save();
+  render();
+}
+
+function attendanceStats(subjectId, studentId=null) {
+  const lessons = data.lessons.filter(
+    l => !subjectId || l.subjectId === subjectId
+  );
+  let present = 0;
+  let marked = 0;
+  lessons.forEach(l => {
+    const marks = data.attendance[l.id] || {};
+    const ids = studentId ? [studentId] : data.students.map(s=>s.id);
+    ids.forEach(sid => {
+      if (marks[sid] !== undefined) {
+        marked++;
+        if (marks[sid] === true) present++;
+      }
+    });
+  });
+  return {
+    present, marked,
+    percent: marked ? Math.round(present/marked*100) : 0
+  };
+}
+
+function exportCSV() {
+  const rows = [["Предмет","Пара","Дата","Ученик","Посещение"]];
+  data.lessons.forEach(l => {
+    const subject = data.subjects.find(s=>s.id===l.subjectId);
+    data.students.forEach(s => {
+      const mark = data.attendance[l.id]?.[s.id];
+      rows.push([
+        subject?.name || "",
+        l.number,
+        l.date,
+        s.name,
+        mark === true ? "Присутствовал" :
+        mark === false ? "Отсутствовал" : "Не отмечено"
+      ]);
+    });
+  });
+  const csv = "\uFEFF" + rows.map(row =>
+    row.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(";")
+  ).join("\n");
+  const file = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(file);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "college-journal.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function render() {
+  document.querySelectorAll("nav button").forEach(b =>
+    b.classList.toggle("active", b.dataset.page === page ||
+      (page === "subject" && b.dataset.page === "subjects"))
+  );
+
+  const app = document.getElementById("app");
+
+  if (page === "home") {
+    app.innerHTML = `
+      <h2>Главная</h2>
+      <p class="muted">Твой журнал посещаемости</p>
+      <div class="cards">
+        <div class="card"><strong>${data.students.length}</strong>
+          <span class="muted">Учеников</span></div>
+        <div class="card"><strong>${data.subjects.length}</strong>
+          <span class="muted">Предметов</span></div>
+        <div class="card"><strong>${data.lessons.length}</strong>
+          <span class="muted">Проведено пар</span></div>
+        <div class="card"><strong>${attendanceStats().percent}%</strong>
+          <span class="muted">Посещаемость</span></div>
+      </div>
+      <div class="actions">
+        ${button("Добавить ученика","addStudent()",true)}
+        ${button("Добавить предмет","addSubject()")}
+      </div>
+      <h2>Последние занятия</h2>
+      ${data.lessons.slice().reverse().slice(0,5).map(l => {
+        const s=data.subjects.find(x=>x.id===l.subjectId);
+        return `<div class="item">
+          <span>${safe(s?.name || "Предмет")} · №${l.number}
+          <div class="small">${safe(l.date)}</div></span>
+        </div>`;
+      }).join("") || '<p class="muted">Занятий пока нет.</p>'}
+    `;
+  }
+
+  if (page === "students") {
+    app.innerHTML = `
+      <h2>Ученики</h2>
+      <p class="muted">Всего: ${data.students.length}</p>
+      <div class="actions">${button("+ Добавить ученика","addStudent()",true)}</div>
+      ${data.students.map((s,i)=>`
+        <div class="item">
+          <span>${i+1}. ${safe(s.name)}</span>
+          <span>${button("Удалить",`deleteStudent('${s.id}')`)}</span>
+        </div>
+      `).join("") || '<p class="muted">Список пока пуст.</p>'}
+    `;
+  }
+
+  if (page === "subjects") {
+    app.innerHTML = `
+      <h2>Предметы</h2>
+      <div class="actions">${button("+ Добавить предмет","addSubject()",true)}</div>
+      ${data.subjects.map(s=>`
+        <div class="item">
+          <span onclick="openSubject('${s.id}')" style="cursor:pointer">
+            <b>${safe(s.name)}</b>
+            <div class="small">${data.lessons.filter(l=>l.subjectId===s.id).length} занятий</div>
+          </span>
+          <span>${button("Открыть",`openSubject('${s.id}')`)}
+          ${button("Удалить",`deleteSubject('${s.id}')`)}</span>
+        </div>
+      `).join("") || '<p class="muted">Добавь первый предмет.</p>'}
+    `;
+  }
+
+  if (page === "subject") {
+    const subject=data.subjects.find(s=>s.id===selectedSubject);
+    if (!subject) { go("subjects"); return; }
+    const lessons=data.lessons.filter(l=>l.subjectId===selectedSubject);
+    const stats=attendanceStats(selectedSubject);
+
+    app.innerHTML = `
+      ${button("← Предметы","go('subjects')")}
+      <h2>${safe(subject.name)}</h2>
+      <div class="cards">
+        <div class="card"><strong>${lessons.length}</strong>
+          <span class="muted">Всего пар</span></div>
+        <div class="card"><strong>${stats.percent}%</strong>
+          <span class="muted">Посещаемость</span></div>
+      </div>
+      <div class="actions">
+        ${button("+ Новая пара","addLesson()",true)}
+      </div>
+      <h3>Занятия</h3>
+      ${lessons.slice().reverse().map(l=>`
+        <div class="item">
+          <span>Пара №${l.number}
+          <div class="small">${safe(l.date)}</div></span>
+          ${button("Открыть",`openLesson('${l.id}')`)}
+        </div>
+      `).join("") || '<p class="muted">Занятий пока нет.</p>'}
+      ${selectedLesson ? lessonView() : ""}
+    `;
+  }
+
+  if (page === "stats") {
+    app.innerHTML = `
+      <h2>Статистика</h2>
+      ${data.students.map(s=>{
+        const st=attendanceStats(null,s.id);
+        return `<div class="card">
+          <b>${safe(s.name)}</b>
+          <strong>${st.percent}%</strong>
+          <div class="progress"><div style="width:${st.percent}%"></div></div>
+          <span class="small">Присутствовал: ${st.present} из ${st.marked} отметок</span>
+        </div>`;
+      }).join("") || '<p class="muted">Добавь учеников.</p>'}
+      <h3>По предметам</h3>
+      ${data.subjects.map(s=>{
+        const st=attendanceStats(s.id);
+        return `<div class="card">
+          <b>${safe(s.name)}</b>
+          <strong>${st.percent}%</strong>
+          <div class="progress"><div style="width:${st.percent}%"></div></div>
+        </div>`;
+      }).join("")}
+      <div class="actions">${button("Экспорт CSV для Excel","exportCSV()",true)}</div>
+    `;
+  }
+}
+
+function lessonView() {
+  const lesson=data.lessons.find(l=>l.id===selectedLesson);
+  if (!lesson) return "";
+  const marks=data.attendance[lesson.id] || {};
+  return `
+    <div class="card">
+      <h3>Пара №${lesson.number}</h3>
+      <label>Дата занятия</label>
+      <input type="date" value="${lesson.date}"
+        onchange="changeDate(this.value)">
+      <h3>Отметки учеников</h3>
+      ${data.students.map((s,i)=>{
+        const mark=marks[s.id];
+        const label=mark===true ? "Был" :
+          mark===false ? "Не был" : "Не отмечен";
+        return `<div class="student-row">
+          <span>${i+1}. ${safe(s.name)}
+            <div class="small ${mark===true?'present':mark===false?'absent':''}">${label}</div>
+          </span>
+          ${button(mark===true?"Был ✓":mark===false?"Не был":"Отметить",
+            `toggleAttendance('${s.id}')`,
+            mark===true)}
+        </div>`;
+      }).join("") || '<p class="muted">Сначала добавь учеников.</p>'}
+    </div>
+  `;
+}
+
+function changeDate(value) {
+  const lesson=data.lessons.find(l=>l.id===selectedLesson);
+  if (lesson && value) {
+    lesson.date=value;
+    save();
+  }
+}
+
+document.querySelectorAll("nav button").forEach(b =>
+  b.addEventListener("click",()=>go(b.dataset.page))
+);
+
+render();
+</script>
+</body>
+</html>
