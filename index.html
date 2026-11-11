@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>College Journal</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -159,8 +159,20 @@ button:disabled {opacity:.5;cursor:not-allowed}
   header {padding:15px}
 }
 </style>
+  
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
+  
+<script>
+if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
 
+    tg.ready();
+    tg.expand();
+
+    console.log("College Journal: Telegram WebApp connected");
+}
+</script>
 <body>
 
 <header>
