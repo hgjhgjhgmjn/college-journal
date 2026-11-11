@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -23,65 +23,140 @@
 }
 * {box-sizing:border-box}
 body {
-  margin:0;background:var(--bg);color:var(--text);
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
   font-family:Arial,sans-serif;
 }
-header {padding:22px;border-bottom:1px solid var(--border)}
+header {
+  padding:18px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
 header h1 {margin:0;font-size:23px}
-header p {color:var(--muted);margin-bottom:0}
+header p {color:var(--muted);margin:5px 0 0}
 nav {
-  display:flex;gap:8px;padding:12px;overflow-x:auto;
-  background:var(--panel)
+  display:flex;
+  gap:8px;
+  padding:12px;
+  overflow-x:auto;
+  background:var(--panel);
 }
 button {
-  border:0;border-radius:10px;padding:11px 15px;
-  background:var(--panel2);color:var(--text);cursor:pointer;
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  background:var(--panel2);
+  color:var(--text);
+  cursor:pointer;
+  white-space:nowrap;
 }
-nav button.active,.primary {background:var(--accent);color:white}
-main {max-width:900px;margin:auto;padding:20px}
+nav button.active,.primary {
+  background:var(--accent);
+  color:white;
+}
+main {max-width:950px;margin:auto;padding:20px}
 h2 {font-size:21px}
+h3 {font-size:17px}
 .muted,.small {color:var(--muted)}
 .small {font-size:12px}
 .cards {
-  display:grid;grid-template-columns:repeat(2,1fr);gap:12px
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
 }
 .card,.item {
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:14px;padding:16px;margin-bottom:12px
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
 }
-.card strong {font-size:27px;display:block;margin:7px 0}
+.card strong {
+  font-size:27px;
+  display:block;
+  margin:7px 0;
+}
 .item {
-  display:flex;justify-content:space-between;
-  align-items:center;gap:10px
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
 }
-.actions {display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:15px 0;
+}
 input,select {
-  background:var(--panel2);border:1px solid var(--border);
-  color:white;padding:12px;border-radius:9px;
-  width:100%;margin:7px 0 12px
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:white;
+  padding:12px;
+  border-radius:9px;
+  width:100%;
+  margin:7px 0 12px;
 }
 label {color:var(--muted);font-size:13px}
 .present {color:var(--green)}
 .absent {color:var(--red)}
 .progress {
-  height:9px;background:var(--panel2);
-  border-radius:10px;overflow:hidden;margin:10px 0
+  height:9px;
+  background:var(--panel2);
+  border-radius:10px;
+  overflow:hidden;
+  margin:10px 0;
 }
-.progress div {height:100%;background:var(--green)}
+.progress div {
+  height:100%;
+  background:var(--green);
+}
 .hidden {display:none}
 .auth {
-  max-width:400px;margin:50px auto;padding:22px;
-  background:var(--panel);border-radius:16px;
-  border:1px solid var(--border)
+  max-width:400px;
+  margin:50px auto;
+  padding:22px;
+  background:var(--panel);
+  border-radius:16px;
+  border:1px solid var(--border);
 }
 .notice {
-  background:var(--panel2);padding:12px;
-  border-radius:10px;margin:12px 0
+  background:var(--panel2);
+  padding:12px;
+  border-radius:10px;
+  margin:12px 0;
 }
 button:disabled {opacity:.5;cursor:not-allowed}
-@media(max-width:500px) {
+.filters {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.language {
+  width:auto;
+  margin:0;
+  padding:9px;
+}
+.stat-line {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:9px 0;
+  border-bottom:1px solid var(--border);
+}
+.absence-item {
+  border-left:3px solid var(--red);
+}
+@media(max-width:550px) {
   main {padding:14px}
-  .item {align-items:flex-start}
+  .item {align-items:flex-start;flex-wrap:wrap}
+  .cards {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .filters {grid-template-columns:1fr}
+  header {padding:15px}
 }
 </style>
 </head>
@@ -89,39 +164,44 @@ button:disabled {opacity:.5;cursor:not-allowed}
 <body>
 
 <header>
-  <h1>College Journal</h1>
-  <p>Личный электронный журнал посещаемости</p>
+  <div>
+    <h1>College Journal</h1>
+    <p id="subtitle"></p>
+  </div>
+  <select id="language" class="language" onchange="setLanguage(this.value)">
+    <option value="ru">RU</option>
+    <option value="ro">RO</option>
+  </select>
 </header>
 
 <div id="auth" class="auth hidden">
-  <h2>Вход в журнал</h2>
-  <p class="muted">Войди в свой личный аккаунт</p>
+  <h2 id="loginTitle"></h2>
+  <p class="muted" id="loginDescription"></p>
   <form onsubmit="login(event)">
     <label>Email</label>
     <input id="email" type="email" required>
-    <label>Пароль</label>
+    <label id="passwordLabel"></label>
     <input id="password" type="password" required>
-    <button class="primary" type="submit">Войти</button>
+    <button class="primary" type="submit" id="loginButton"></button>
   </form>
   <p id="authMessage" class="small"></p>
 </div>
 
 <div id="journal" class="hidden">
-<nav>
-  <button data-page="home">Главная</button>
-  <button data-page="students">Ученики</button>
-  <button data-page="subjects">Предметы</button>
-  <button data-page="stats">Статистика</button>
-  <button onclick="logout()">Выйти</button>
-</nav>
-<main id="app">
-  <p class="muted">Загрузка журнала...</p>
-</main>
+  <nav>
+    <button data-page="home" id="navHome"></button>
+    <button data-page="students" id="navStudents"></button>
+    <button data-page="subjects" id="navSubjects"></button>
+    <button data-page="history" id="navHistory"></button>
+    <button data-page="stats" id="navStats"></button>
+    <button onclick="logout()" id="logoutButton"></button>
+  </nav>
+  <main id="app"></main>
 </div>
 
 <script>
 // ==========================================
-// 1. НАСТРОЙКИ SUPABASE
+// 1. SUPABASE
 // ==========================================
 
 const SUPABASE_URL = "https://nbwczdazkikduxzgarvb.supabase.co";
@@ -133,32 +213,249 @@ const db = window.supabase.createClient(
 );
 
 // ==========================================
-// 2. ДАННЫЕ И СОСТОЯНИЕ
+// 2. ПЕРЕВОДЫ
 // ==========================================
 
-let data = {
-  students: [],
-  subjects: [],
-  lessons: [],
-  attendance: {}
+const translations = {
+ru: {
+  subtitle:"Личный электронный журнал посещаемости",
+  login:"Вход в журнал",
+  loginDescription:"Войди в свой личный аккаунт",
+  password:"Пароль",
+  enter:"Войти",
+  home:"Главная",
+  students:"Ученики",
+  subjects:"Предметы",
+  history:"История",
+  stats:"Статистика",
+  logout:"Выйти",
+  loading:"Загрузка данных...",
+  welcome:"Твой электронный журнал",
+  studentCount:"Учеников",
+  subjectCount:"Предметов",
+  lessonCount:"Проведено занятий",
+  latest:"Последние занятия",
+  addStudent:"+ Добавить ученика",
+  addSubject:"+ Добавить предмет",
+  addLesson:"+ Новое занятие",
+  edit:"Изменить",
+  delete:"Удалить",
+  open:"Открыть",
+  back:"← Назад",
+  emptyStudents:"Список учеников пуст.",
+  emptySubjects:"Предметов пока нет.",
+  emptyLessons:"Занятий пока нет.",
+  total:"Всего",
+  lessons:"Занятий",
+  date:"Дата занятия",
+  marks:"Отметки учеников",
+  present:"Присутствовал",
+  absent:"Отсутствовал",
+  unmarked:"Не отмечен",
+  was:"Был",
+  wasNot:"Не был",
+  student:"Ученик",
+  chooseStudent:"Выбери ученика",
+  chooseSubject:"Все предметы",
+  from:"Дата с",
+  to:"Дата по",
+  filter:"Фильтр",
+  reset:"Сбросить",
+  personalStats:"Персональная статистика",
+  attendance:"Посещаемость",
+  visits:"Присутствий",
+  absences:"Пропусков",
+  marked:"Отмечено занятий",
+  noMarks:"Для этого ученика пока нет отметок.",
+  absenceHistory:"История пропусков",
+  presenceHistory:"История посещений",
+  subjectStats:"Статистика по предметам",
+  export:"Экспорт в Excel (.xlsx)",
+  noHistory:"Занятий по выбранным фильтрам нет.",
+  noStudents:"Сначала добавь учеников.",
+  noSubjects:"Сначала добавь предмет.",
+  subject:"Предмет",
+  number:"Занятие №",
+  confirmStudent:"Удалить ученика и его отметки?",
+  confirmSubject:"Удалить предмет, все его занятия и отметки?",
+  confirmLesson:"Удалить занятие и все его отметки?",
+  enterStudent:"Введите имя и фамилию ученика:",
+  editStudent:"Изменить имя ученика:",
+  enterSubject:"Введите название предмета:",
+  editSubject:"Изменить название:",
+  excelPresent:"Присутствовал",
+  excelAbsent:"Отсутствовал",
+  excelNone:"Не отмечено",
+  error:"Ошибка",
+  loginWait:"Выполняется вход...",
+  wrongConfig:"Проверь настройки Supabase в коде.",
+  noStudentSelected:"Сначала выбери ученика.",
+  totalLessons:"Всего занятий",
+  percent:"Процент посещаемости",
+  selectedStudent:"Выбранный ученик",
+  viewAbsences:"Посмотреть пропуски",
+  absenceList:"Список пропусков",
+  backToStats:"← К статистике ученика",
+  noAbsences:"У этого ученика нет пропусков.",
+  absenceNumber:"Пропуск №",
+  allDates:"Все даты"
+},
+ro: {
+  subtitle:"Jurnal electronic personal de prezență",
+  login:"Autentificare",
+  loginDescription:"Intră în contul tău personal",
+  password:"Parolă",
+  enter:"Intră",
+  home:"Acasă",
+  students:"Elevi",
+  subjects:"Discipline",
+  history:"Istoric",
+  stats:"Statistici",
+  logout:"Ieșire",
+  loading:"Se încarcă datele...",
+  welcome:"Jurnalul tău electronic",
+  studentCount:"Elevi",
+  subjectCount:"Discipline",
+  lessonCount:"Lecții desfășurate",
+  latest:"Ultimele lecții",
+  addStudent:"+ Adaugă elev",
+  addSubject:"+ Adaugă disciplină",
+  addLesson:"+ Lecție nouă",
+  edit:"Modifică",
+  delete:"Șterge",
+  open:"Deschide",
+  back:"← Înapoi",
+  emptyStudents:"Lista elevilor este goală.",
+  emptySubjects:"Nu există discipline.",
+  emptyLessons:"Nu există lecții.",
+  total:"Total",
+  lessons:"Lecții",
+  date:"Data lecției",
+  marks:"Prezența elevilor",
+  present:"Prezent",
+  absent:"Absent",
+  unmarked:"Nemarcat",
+  was:"Prezent",
+  wasNot:"Absent",
+  student:"Elev",
+  chooseStudent:"Alege elevul",
+  chooseSubject:"Toate disciplinele",
+  from:"Data de la",
+  to:"Data până la",
+  filter:"Filtrează",
+  reset:"Resetează",
+  personalStats:"Statistici personale",
+  attendance:"Prezență",
+  visits:"Prezențe",
+  absences:"Absențe",
+  marked:"Lecții marcate",
+  noMarks:"Acest elev nu are încă marcaje.",
+  absenceHistory:"Istoricul absențelor",
+  presenceHistory:"Istoricul prezențelor",
+  subjectStats:"Statistici pe discipline",
+  export:"Exportă în Excel (.xlsx)",
+  noHistory:"Nu există lecții pentru filtrele selectate.",
+  noStudents:"Adaugă mai întâi elevi.",
+  noSubjects:"Adaugă mai întâi o disciplină.",
+  subject:"Disciplina",
+  number:"Lecția nr.",
+  confirmStudent:"Ștergi elevul și marcajele sale?",
+  confirmSubject:"Ștergi disciplina, lecțiile și marcajele?",
+  confirmLesson:"Ștergi lecția și toate marcajele?",
+  enterStudent:"Introdu numele și prenumele elevului:",
+  editStudent:"Modifică numele elevului:",
+  enterSubject:"Introdu denumirea disciplinei:",
+  editSubject:"Modifică denumirea:",
+  excelPresent:"Prezent",
+  excelAbsent:"Absent",
+  excelNone:"Nemarcat",
+  error:"Eroare",
+  loginWait:"Autentificare în curs...",
+  wrongConfig:"Verifică setările Supabase din cod.",
+  noStudentSelected:"Alege mai întâi un elev.",
+  totalLessons:"Total lecții",
+  percent:"Procentul de prezență",
+  selectedStudent:"Elev selectat",
+  viewAbsences:"Vezi absențele",
+  absenceList:"Lista absențelor",
+  backToStats:"← Înapoi la statistici",
+  noAbsences:"Acest elev nu are absențe.",
+  absenceNumber:"Absența nr.",
+  allDates:"Toate datele"
+}
 };
 
-let page = "home";
-let selectedSubject = null;
-let selectedLesson = null;
-let busy = false;
+let language=localStorage.getItem("cj_language") || "ru";
 
-const app = document.getElementById("app");
+function t(key) {
+  return translations[language][key] || key;
+}
+
+function setLanguage(value) {
+  language=value;
+  localStorage.setItem("cj_language",value);
+  document.documentElement.lang=value;
+  updateStaticText();
+  render();
+}
+
+function updateStaticText() {
+  document.getElementById("language").value=language;
+  document.getElementById("subtitle").textContent=t("subtitle");
+  document.getElementById("loginTitle").textContent=t("login");
+  document.getElementById("loginDescription").textContent=t("loginDescription");
+  document.getElementById("passwordLabel").textContent=t("password");
+  document.getElementById("loginButton").textContent=t("enter");
+
+  const ids={
+    navHome:"home",
+    navStudents:"students",
+    navSubjects:"subjects",
+    navHistory:"history",
+    navStats:"stats",
+    logoutButton:"logout"
+  };
+
+  Object.entries(ids).forEach(([id,key])=>{
+    document.getElementById(id).textContent=t(key);
+  });
+}
+
+// ==========================================
+// 3. СОСТОЯНИЕ
+// ==========================================
+
+let data={
+  students:[],
+  subjects:[],
+  lessons:[],
+  attendance:{}
+};
+
+let page="home";
+let selectedSubject=null;
+let selectedLesson=null;
+let lessonReturnPage="history";
+let selectedStudent="";
+let historySubject="";
+let historyFrom="";
+let historyTo="";
+let busy=false;
+
+const app=document.getElementById("app");
 
 function safe(value) {
   return String(value ?? "").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#39;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
   })[c]);
 }
 
 function localDate() {
-  const d = new Date();
+  const d=new Date();
   return [
     d.getFullYear(),
     String(d.getMonth()+1).padStart(2,"0"),
@@ -166,19 +463,19 @@ function localDate() {
   ].join("-");
 }
 
+function button(text,action,primary=false) {
+  return `<button class="${primary?"primary":""}"
+    onclick="${action}">${text}</button>`;
+}
+
 function notify(message) {
   alert(message);
 }
 
-function button(text, action, primary=false) {
-  return `<button class="${primary ? "primary" : ""}"
-    onclick="${action}">${text}</button>`;
-}
-
 function setBusy(value) {
-  busy = value;
+  busy=value;
   document.querySelectorAll("button").forEach(b=>{
-    b.disabled = value;
+    b.disabled=value;
   });
 }
 
@@ -189,31 +486,31 @@ async function run(action) {
     await action();
   } catch(error) {
     console.error(error);
-    notify("Ошибка: " + (error.message || error));
+    notify(t("error")+": "+(error.message || error));
   } finally {
     setBusy(false);
   }
 }
 
 // ==========================================
-// 3. АВТОРИЗАЦИЯ
+// 4. АВТОРИЗАЦИЯ
 // ==========================================
 
 async function login(event) {
   event.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const message = document.getElementById("authMessage");
+  const email=document.getElementById("email").value;
+  const password=document.getElementById("password").value;
+  const message=document.getElementById("authMessage");
 
-  message.textContent = "Выполняется вход...";
+  message.textContent=t("loginWait");
 
-  const {error} = await db.auth.signInWithPassword({
+  const {error}=await db.auth.signInWithPassword({
     email,password
   });
 
   if (error) {
-    message.textContent = error.message;
+    message.textContent=error.message;
     return;
   }
 
@@ -233,16 +530,17 @@ async function startJournal() {
 
 async function checkAuth() {
   if (
+    !SUPABASE_URL.startsWith("https://") ||
     SUPABASE_URL.includes("ВСТАВЬ") ||
+    !SUPABASE_KEY ||
     SUPABASE_KEY.includes("ВСТАВЬ")
   ) {
     document.getElementById("auth").classList.remove("hidden");
-    document.getElementById("authMessage").textContent =
-      "Сначала вставь API URL и Publishable key в код.";
+    document.getElementById("authMessage").textContent=t("wrongConfig");
     return;
   }
 
-  const {data:result,error} = await db.auth.getSession();
+  const {data:result,error}=await db.auth.getSession();
 
   if (error) {
     notify(error.message);
@@ -257,13 +555,13 @@ async function checkAuth() {
 }
 
 // ==========================================
-// 4. ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
+// 5. ЗАГРУЗКА ДАННЫХ
 // ==========================================
 
 async function loadData() {
-  app.innerHTML = '<p class="muted">Загрузка данных...</p>';
+  app.innerHTML=`<p class="muted">${t("loading")}</p>`;
 
-  const [students,subjects,lessons,attendance] = await Promise.all([
+  const [students,subjects,lessons,attendance]=await Promise.all([
     db.from("students").select("*").order("full_name"),
     db.from("subjects").select("*").order("name"),
     db.from("lessons").select("*").order("lesson_date"),
@@ -274,33 +572,31 @@ async function loadData() {
     if (result.error) throw result.error;
   }
 
-  data.students = students.data;
-  data.subjects = subjects.data;
-  data.lessons = lessons.data;
-
-  data.attendance = {};
+  data.students=students.data;
+  data.subjects=subjects.data;
+  data.lessons=lessons.data;
+  data.attendance={};
 
   attendance.data.forEach(mark=>{
     if (!data.attendance[mark.lesson_id]) {
-      data.attendance[mark.lesson_id] = {};
+      data.attendance[mark.lesson_id]={};
     }
-    data.attendance[mark.lesson_id][mark.student_id] =
-      mark.is_present;
+    data.attendance[mark.lesson_id][mark.student_id]=mark.is_present;
   });
 
   render();
 }
 
 // ==========================================
-// 5. УЧЕНИКИ
+// 6. УЧЕНИКИ
 // ==========================================
 
 async function addStudent() {
-  const name = prompt("Введите имя и фамилию ученика:");
+  const name=prompt(t("enterStudent"));
   if (!name || !name.trim()) return;
 
   await run(async()=>{
-    const {error} = await db.from("students").insert({
+    const {error}=await db.from("students").insert({
       full_name:name.trim()
     });
     if (error) throw error;
@@ -308,47 +604,48 @@ async function addStudent() {
   });
 }
 
-async function editStudent(studentId) {
-  const student = data.students.find(s=>s.id===studentId);
+async function editStudent(id) {
+  const student=data.students.find(s=>s.id===id);
   if (!student) return;
 
-  const name = prompt("Изменить имя ученика:",student.full_name);
+  const name=prompt(t("editStudent"),student.full_name);
   if (!name || !name.trim()) return;
 
   await run(async()=>{
-    const {error} = await db.from("students")
-      .update({full_name:name.trim()}).eq("id",studentId);
+    const {error}=await db.from("students")
+      .update({full_name:name.trim()}).eq("id",id);
     if (error) throw error;
     await loadData();
   });
 }
 
-async function deleteStudent(studentId) {
-  if (!confirm("Удалить ученика и его отметки?")) return;
+async function deleteStudent(id) {
+  if (!confirm(t("confirmStudent"))) return;
 
   await run(async()=>{
-    const {error:markError} = await db.from("attendance")
-      .delete().eq("student_id",studentId);
+    const {error:markError}=await db.from("attendance")
+      .delete().eq("student_id",id);
     if (markError) throw markError;
 
-    const {error} = await db.from("students")
-      .delete().eq("id",studentId);
+    const {error}=await db.from("students")
+      .delete().eq("id",id);
     if (error) throw error;
 
+    if (selectedStudent===id) selectedStudent="";
     await loadData();
   });
 }
 
 // ==========================================
-// 6. ПРЕДМЕТЫ
+// 7. ПРЕДМЕТЫ
 // ==========================================
 
 async function addSubject() {
-  const name = prompt("Введите название предмета:");
+  const name=prompt(t("enterSubject"));
   if (!name || !name.trim()) return;
 
   await run(async()=>{
-    const {error} = await db.from("subjects").insert({
+    const {error}=await db.from("subjects").insert({
       name:name.trim()
     });
     if (error) throw error;
@@ -356,67 +653,66 @@ async function addSubject() {
   });
 }
 
-async function editSubject(subjectId) {
-  const subject = data.subjects.find(s=>s.id===subjectId);
+async function editSubject(id) {
+  const subject=data.subjects.find(s=>s.id===id);
   if (!subject) return;
 
-  const name = prompt("Изменить название:",subject.name);
+  const name=prompt(t("editSubject"),subject.name);
   if (!name || !name.trim()) return;
 
   await run(async()=>{
-    const {error} = await db.from("subjects")
-      .update({name:name.trim()}).eq("id",subjectId);
+    const {error}=await db.from("subjects")
+      .update({name:name.trim()}).eq("id",id);
     if (error) throw error;
     await loadData();
   });
 }
 
-async function deleteSubject(subjectId) {
-  if (!confirm("Удалить предмет, все его занятия и отметки?")) return;
+async function deleteSubject(id) {
+  if (!confirm(t("confirmSubject"))) return;
 
   await run(async()=>{
-    const lessons = data.lessons.filter(
-      l=>l.subject_id===subjectId
-    );
+    const lessons=data.lessons.filter(l=>l.subject_id===id);
 
     for (const lesson of lessons) {
-      const {error:markError} = await db.from("attendance")
+      const {error:markError}=await db.from("attendance")
         .delete().eq("lesson_id",lesson.id);
       if (markError) throw markError;
 
-      const {error:lessonError} = await db.from("lessons")
+      const {error:lessonError}=await db.from("lessons")
         .delete().eq("id",lesson.id);
       if (lessonError) throw lessonError;
     }
 
-    const {error} = await db.from("subjects")
-      .delete().eq("id",subjectId);
+    const {error}=await db.from("subjects")
+      .delete().eq("id",id);
     if (error) throw error;
 
-    selectedSubject = null;
-    selectedLesson = null;
+    selectedSubject=null;
+    selectedLesson=null;
     await loadData();
   });
 }
 
 // ==========================================
-// 7. ЗАНЯТИЯ
+// 8. ЗАНЯТИЯ
 // ==========================================
 
 async function addLesson() {
-  const subjectId = selectedSubject;
-  const previous = data.lessons.filter(
-    l=>l.subject_id===subjectId
+  if (!selectedSubject) return;
+
+  const previous=data.lessons.filter(
+    l=>l.subject_id===selectedSubject
   );
 
-  const number = previous.length
+  const number=previous.length
     ? Math.max(...previous.map(l=>l.lesson_number))+1
     : 1;
 
   await run(async()=>{
-    const {data:lesson,error} = await db.from("lessons")
+    const {data:lesson,error}=await db.from("lessons")
       .insert({
-        subject_id:subjectId,
+        subject_id:selectedSubject,
         lesson_number:number,
         lesson_date:localDate()
       })
@@ -425,16 +721,18 @@ async function addLesson() {
 
     if (error) throw error;
 
-    selectedLesson = lesson.id;
+    selectedLesson=lesson.id;
+    lessonReturnPage="subject";
+    page="lesson";
     await loadData();
   });
 }
 
 async function changeDate(value) {
-  if (!value) return;
+  if (!value || !selectedLesson) return;
 
   await run(async()=>{
-    const {error} = await db.from("lessons")
+    const {error}=await db.from("lessons")
       .update({lesson_date:value}).eq("id",selectedLesson);
 
     if (error) throw error;
@@ -442,43 +740,42 @@ async function changeDate(value) {
   });
 }
 
-async function deleteLesson(lessonId) {
-  if (!confirm("Удалить занятие и все его отметки?")) return;
+async function deleteLesson(id) {
+  if (!confirm(t("confirmLesson"))) return;
 
   await run(async()=>{
-    const {error:markError} = await db.from("attendance")
-      .delete().eq("lesson_id",lessonId);
+    const {error:markError}=await db.from("attendance")
+      .delete().eq("lesson_id",id);
     if (markError) throw markError;
 
-    const {error} = await db.from("lessons")
-      .delete().eq("id",lessonId);
+    const {error}=await db.from("lessons")
+      .delete().eq("id",id);
     if (error) throw error;
 
-    selectedLesson = null;
+    selectedLesson=null;
     await loadData();
   });
 }
 
 // ==========================================
-// 8. ПОСЕЩАЕМОСТЬ
+// 9. ПОСЕЩАЕМОСТЬ
 // ==========================================
 
 async function setAttendance(studentId,value) {
   await run(async()=>{
-    if (value === "none") {
-      const {error} = await db.from("attendance")
+    if (value==="none") {
+      const {error}=await db.from("attendance")
         .delete()
         .eq("lesson_id",selectedLesson)
         .eq("student_id",studentId);
       if (error) throw error;
     } else {
-      const {error} = await db.from("attendance")
+      const {error}=await db.from("attendance")
         .upsert({
           lesson_id:selectedLesson,
           student_id:studentId,
           is_present:value==="present"
         },{onConflict:"lesson_id,student_id"});
-
       if (error) throw error;
     }
 
@@ -487,44 +784,60 @@ async function setAttendance(studentId,value) {
 }
 
 // ==========================================
-// 9. СТАТИСТИКА
+// 10. ПЕРСОНАЛЬНАЯ СТАТИСТИКА
 // ==========================================
 
-function attendanceStats(subjectId=null,studentId=null) {
-  const lessons = data.lessons.filter(
-    l=>!subjectId || l.subject_id===subjectId
+function studentStats(studentId,subjectId=null) {
+  const lessons=data.lessons.filter(l=>
+    !subjectId || l.subject_id===subjectId
   );
 
-  let present=0,absent=0,marked=0;
+  let present=0;
+  let absent=0;
+  let marked=0;
+
+  const absences=[];
+  const presences=[];
 
   lessons.forEach(lesson=>{
-    const marks = data.attendance[lesson.id] || {};
+    const mark=data.attendance[lesson.id]?.[studentId];
 
-    const ids = studentId
-      ? [studentId]
-      : data.students.map(s=>s.id);
+    if (mark===undefined) return;
 
-    ids.forEach(id=>{
-      const mark=marks[id];
+    const subject=data.subjects.find(
+      s=>s.id===lesson.subject_id
+    );
 
-      if (mark === undefined) return;
+    const record={
+      date:lesson.lesson_date,
+      number:lesson.lesson_number,
+      subject:subject?.name || "",
+      lessonId:lesson.id
+    };
 
-      marked++;
-      if (mark === true) present++;
-      else absent++;
-    });
+    marked++;
+
+    if (mark===true) {
+      present++;
+      presences.push(record);
+    } else {
+      absent++;
+      absences.push(record);
+    }
   });
 
   return {
     present,
     absent,
     marked,
-    percent:marked ? Math.round(present/marked*100) : 0
+    percent:marked ? Math.round(present/marked*100) : 0,
+    absences,
+    presences
   };
 }
 
 // ==========================================
-// 10. НАВИГАЦИЯ
+// 11. НАВИГАЦИЯ
 // ==========================================
 
 function go(p) {
@@ -541,123 +854,191 @@ function openSubject(id) {
   render();
 }
 
-function openLesson(id) {
+function openLesson(id,returnPage) {
   selectedLesson=id;
+  lessonReturnPage=returnPage || "history";
+  page="lesson";
+  render();
+}
+
+function backFromLesson() {
+  page=lessonReturnPage || "history";
+  selectedLesson=null;
+  render();
+}
+
+function backFromAbsences() {
+  page="stats";
   render();
 }
 
 // ==========================================
-// 11. ЭКСПОРТ EXCEL
+// 12. ИСТОРИЯ И ФИЛЬТРЫ
+// ==========================================
+
+function applyHistoryFilters() {
+  historySubject=document.getElementById("historySubject").value;
+  historyFrom=document.getElementById("historyFrom").value;
+  historyTo=document.getElementById("historyTo").value;
+  render();
+}
+
+function resetHistoryFilters() {
+  historySubject="";
+  historyFrom="";
+  historyTo="";
+  render();
+}
+
+function filteredLessons() {
+  return data.lessons.filter(l=>{
+    if (historySubject && l.subject_id!==historySubject) return false;
+    if (historyFrom && l.lesson_date<historyFrom) return false;
+    if (historyTo && l.lesson_date>historyTo) return false;
+    return true;
+  }).sort((a,b)=>
+    b.lesson_date.localeCompare(a.lesson_date) ||
+    b.lesson_number-a.lesson_number
+  );
+}
+
+// ==========================================
+// 13. EXCEL
 // ==========================================
 
 function exportExcel() {
-  const rows = [[
-    "Предмет","Номер занятия","Дата",
-    "Ученик","Посещение"
+  if (!selectedStudent) {
+    notify(t("noStudentSelected"));
+    return;
+  }
+
+  const student=data.students.find(s=>s.id===selectedStudent);
+  if (!student) return;
+
+  const rows=[[
+    t("student"),
+    t("subject"),
+    t("number"),
+    t("date"),
+    t("attendance")
   ]];
 
-  data.lessons.forEach(lesson=>{
-    const subject=data.subjects.find(
-      s=>s.id===lesson.subject_id
-    );
-
-    data.students.forEach(student=>{
-      const mark=data.attendance[lesson.id]?.[student.id];
+  data.lessons
+    .slice()
+    .sort((a,b)=>a.lesson_date.localeCompare(b.lesson_date))
+    .forEach(lesson=>{
+      const mark=data.attendance[lesson.id]?.[selectedStudent];
+      const subject=data.subjects.find(s=>s.id===lesson.subject_id);
 
       rows.push([
+        student.full_name,
         subject?.name || "",
         lesson.lesson_number,
         lesson.lesson_date,
-        student.full_name,
-        mark===true ? "Присутствовал" :
-        mark===false ? "Отсутствовал" : "Не отмечено"
+        mark===true ? t("excelPresent") :
+        mark===false ? t("excelAbsent") : t("excelNone")
       ]);
     });
-  });
 
   const workbook=XLSX.utils.book_new();
   const sheet=XLSX.utils.aoa_to_sheet(rows);
 
-  XLSX.utils.book_append_sheet(workbook,sheet,"Посещаемость");
-  XLSX.writeFile(workbook,"College-Journal.xlsx");
+  XLSX.utils.book_append_sheet(workbook,sheet,"Student");
+
+  XLSX.writeFile(
+    workbook,
+    "College-Journal-"+student.full_name.replace(/[^\p{L}\p{N}-]/gu,"_")+".xlsx"
+  );
 }
 
 // ==========================================
-// 12. ОТОБРАЖЕНИЕ СТРАНИЦ
+// 14. ОТОБРАЖЕНИЕ СТРАНИЦ
 // ==========================================
 
 function render() {
+  updateStaticText();
+
   document.querySelectorAll("nav button[data-page]").forEach(b=>{
     b.classList.toggle("active",
       b.dataset.page===page ||
-      (page==="subject" && b.dataset.page==="subjects")
+      (page==="subject" && b.dataset.page==="subjects") ||
+      (page==="lesson" && lessonReturnPage==="subject" &&
+       b.dataset.page==="subjects") ||
+      (page==="lesson" && ["history","stats","absences"].includes(lessonReturnPage) &&
+       b.dataset.page===(lessonReturnPage==="absences"?"stats":lessonReturnPage))
     );
   });
 
+  // ГЛАВНАЯ
+
   if (page==="home") {
-    const st=attendanceStats();
+    const latest=data.lessons.slice()
+      .sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date))
+      .slice(0,5);
 
     app.innerHTML=`
-      <h2>Главная</h2>
-      <p class="muted">Твой электронный журнал</p>
+      <h2>${t("home")}</h2>
+      <p class="muted">${t("welcome")}</p>
 
       <div class="cards">
         <div class="card"><strong>${data.students.length}</strong>
-          <span class="muted">Учеников</span></div>
+          <span class="muted">${t("studentCount")}</span></div>
         <div class="card"><strong>${data.subjects.length}</strong>
-          <span class="muted">Предметов</span></div>
+          <span class="muted">${t("subjectCount")}</span></div>
         <div class="card"><strong>${data.lessons.length}</strong>
-          <span class="muted">Проведено пар</span></div>
-        <div class="card"><strong>${st.absent}</strong>
-          <span class="muted">Всего пропусков</span></div>
-        <div class="card"><strong>${st.percent}%</strong>
-          <span class="muted">Посещаемость</span></div>
-        <div class="card"><strong>${st.present}</strong>
-          <span class="muted">Присутствий</span></div>
+          <span class="muted">${t("lessonCount")}</span></div>
       </div>
 
       <div class="actions">
-        ${button("+ Ученик","addStudent()",true)}
-        ${button("+ Предмет","addSubject()")}
+        ${button(t("addStudent"),"addStudent()",true)}
+        ${button(t("addSubject"),"addSubject()")}
       </div>
 
-      <h2>Последние занятия</h2>
-      ${data.lessons.slice().reverse().slice(0,5).map(l=>{
+      <h3>${t("latest")}</h3>
+
+      ${latest.map(l=>{
         const s=data.subjects.find(x=>x.id===l.subject_id);
         return `<div class="item">
-          <span>${safe(s?.name)} · №${l.lesson_number}
-          <div class="small">${safe(l.lesson_date)}</div></span>
-          ${button("Открыть",`openSubject('${l.subject_id}')`)}
+          <span>${safe(s?.name)} · ${t("number")} ${l.lesson_number}
+            <div class="small">${safe(l.lesson_date)}</div>
+          </span>
+          ${button(t("open"),`openLesson('${l.id}','history')`)}
         </div>`;
-      }).join("") || '<p class="muted">Занятий пока нет.</p>'}
+      }).join("") || `<p class="muted">${t("emptyLessons")}</p>`}
     `;
   }
 
+  // УЧЕНИКИ
+
   if (page==="students") {
     app.innerHTML=`
-      <h2>Ученики</h2>
-      <p class="muted">Всего: ${data.students.length}</p>
+      <h2>${t("students")}</h2>
+      <p class="muted">${t("total")}: ${data.students.length}</p>
+
       <div class="actions">
-        ${button("+ Добавить ученика","addStudent()",true)}
+        ${button(t("addStudent"),"addStudent()",true)}
       </div>
 
       ${data.students.map((s,i)=>`
         <div class="item">
           <span>${i+1}. ${safe(s.full_name)}</span>
           <span>
-            ${button("Изменить",`editStudent('${s.id}')`)}
-            ${button("Удалить",`deleteStudent('${s.id}')`)}
+            ${button(t("edit"),`editStudent('${s.id}')`)}
+            ${button(t("delete"),`deleteStudent('${s.id}')`)}
           </span>
         </div>
-      `).join("") || '<p class="muted">Список пуст.</p>'}
+      `).join("") || `<p class="muted">${t("emptyStudents")}</p>`}
     `;
   }
 
+  // ПРЕДМЕТЫ
+
   if (page==="subjects") {
     app.innerHTML=`
-      <h2>Предметы</h2>
+      <h2>${t("subjects")}</h2>
+
       <div class="actions">
-        ${button("+ Добавить предмет","addSubject()",true)}
+        ${button(t("addSubject"),"addSubject()",true)}
       </div>
 
       ${data.subjects.map(s=>`
@@ -665,183 +1046,376 @@ function render() {
           <span>
             <b>${safe(s.name)}</b>
             <div class="small">
-              ${data.lessons.filter(l=>l.subject_id===s.id).length} занятий
+              ${data.lessons.filter(l=>l.subject_id===s.id).length} ${t("lessons")}
             </div>
           </span>
           <span>
-            ${button("Открыть",`openSubject('${s.id}')`)}
-            ${button("Изменить",`editSubject('${s.id}')`)}
-            ${button("Удалить",`deleteSubject('${s.id}')`)}
+            ${button(t("open"),`openSubject('${s.id}')`)}
+            ${button(t("edit"),`editSubject('${s.id}')`)}
+            ${button(t("delete"),`deleteSubject('${s.id}')`)}
           </span>
         </div>
-      `).join("") || '<p class="muted">Добавь первый предмет.</p>'}
+      `).join("") || `<p class="muted">${t("emptySubjects")}</p>`}
     `;
   }
+
+  // СТРАНИЦА ПРЕДМЕТА
 
   if (page==="subject") {
     const subject=data.subjects.find(s=>s.id===selectedSubject);
-    if (!subject) {go("subjects");return;}
+
+    if (!subject) {
+      page="subjects";
+      render();
+      return;
+    }
 
     const lessons=data.lessons.filter(
       l=>l.subject_id===selectedSubject
-    );
-
-    const st=attendanceStats(selectedSubject);
+    ).sort((a,b)=>b.lesson_date.localeCompare(a.lesson_date));
 
     app.innerHTML=`
-      ${button("← Предметы","go('subjects')")}
+      ${button(t("back"),"go('subjects')")}
       <h2>${safe(subject.name)}</h2>
 
-      <div class="cards">
-        <div class="card"><strong>${lessons.length}</strong>
-          <span class="muted">Всего пар</span></div>
-        <div class="card"><strong>${st.absent}</strong>
-          <span class="muted">Пропусков</span></div>
-        <div class="card"><strong>${st.percent}%</strong>
-          <span class="muted">Посещаемость</span></div>
+      <div class="card">
+        <strong>${lessons.length}</strong>
+        <span class="muted">${t("lessonCount")}</span>
       </div>
 
       <div class="actions">
-        ${button("+ Новая пара","addLesson()",true)}
+        ${button(t("addLesson"),"addLesson()",true)}
       </div>
 
-      <h3>Занятия</h3>
+      <h3>${t("history")}</h3>
 
-      ${lessons.slice().reverse().map(l=>`
+      ${lessons.map(l=>`
         <div class="item">
-          <span>Пара №${l.lesson_number}
+          <span>${t("number")} ${l.lesson_number}
             <div class="small">${safe(l.lesson_date)}</div>
           </span>
           <span>
-            ${button("Открыть",`openLesson('${l.id}')`)}
-            ${button("Удалить",`deleteLesson('${l.id}')`)}
+            ${button(t("open"),`openLesson('${l.id}','subject')`)}
+            ${button(t("delete"),`deleteLesson('${l.id}')`)}
           </span>
         </div>
-      `).join("") || '<p class="muted">Занятий пока нет.</p>'}
-
-      ${selectedLesson ? lessonView() : ""}
+      `).join("") || `<p class="muted">${t("emptyLessons")}</p>`}
     `;
   }
 
+  // ИСТОРИЯ
+
+  if (page==="history") {
+    app.innerHTML=`
+      <h2>${t("history")}</h2>
+
+      <div class="card">
+        <div class="filters">
+          <div>
+            <label>${t("subject")}</label>
+            <select id="historySubject">
+              <option value="">${t("chooseSubject")}</option>
+              ${data.subjects.map(s=>`
+                <option value="${s.id}" ${historySubject===s.id?"selected":""}>
+                  ${safe(s.name)}
+                </option>
+              `).join("")}
+            </select>
+          </div>
+
+          <div>
+            <label>${t("from")}</label>
+            <input id="historyFrom" type="date" value="${safe(historyFrom)}">
+          </div>
+
+          <div>
+            <label>${t("to")}</label>
+            <input id="historyTo" type="date" value="${safe(historyTo)}">
+          </div>
+        </div>
+
+        <div class="actions">
+          ${button(t("filter"),"applyHistoryFilters()",true)}
+          ${button(t("reset"),"resetHistoryFilters()")}
+        </div>
+      </div>
+
+      ${filteredLessons().map(l=>{
+        const s=data.subjects.find(x=>x.id===l.subject_id);
+        return `<div class="item">
+          <span>
+            <b>${safe(s?.name || "")}</b>
+            <div class="small">${t("number")} ${l.lesson_number} · ${safe(l.lesson_date)}</div>
+          </span>
+          ${button(t("open"),`openLesson('${l.id}','history')`)}
+        </div>`;
+      }).join("") || `<p class="muted">${t("noHistory")}</p>`}
+    `;
+  }
+
+  // ПЕРСОНАЛЬНАЯ СТАТИСТИКА
+
   if (page==="stats") {
-    const total=attendanceStats();
+    const student=data.students.find(s=>s.id===selectedStudent);
 
     app.innerHTML=`
-      <h2>Общая статистика</h2>
+      <h2>${t("personalStats")}</h2>
 
-      <div class="cards">
-        <div class="card"><strong>${total.absent}</strong>
-          <span class="muted">Всего пропусков</span></div>
-        <div class="card"><strong>${total.present}</strong>
-          <span class="muted">Присутствий</span></div>
-        <div class="card"><strong>${total.percent}%</strong>
-          <span class="muted">Посещаемость</span></div>
-        <div class="card"><strong>${total.marked}</strong>
-          <span class="muted">Всего отметок</span></div>
-      </div>
+      <label>${t("selectedStudent")}</label>
+      <select id="studentSelect" onchange="selectStudent(this.value)">
+        <option value="">${t("chooseStudent")}</option>
+        ${data.students.map(s=>`
+          <option value="${s.id}" ${selectedStudent===s.id?"selected":""}>
+            ${safe(s.full_name)}
+          </option>
+        `).join("")}
+      </select>
 
-      <h3>По ученикам</h3>
-
-      ${data.students.map(s=>{
-        const st=attendanceStats(null,s.id);
-        return `
-          <div class="card">
-            <b>${safe(s.full_name)}</b>
-            <strong>${st.percent}%</strong>
-            <div class="progress">
-              <div style="width:${st.percent}%"></div>
-            </div>
-            <span class="small">
-              Присутствовал: ${st.present} ·
-              Пропустил: ${st.absent}
-            </span>
-          </div>
-        `;
-      }).join("") || '<p class="muted">Добавь учеников.</p>'}
-
-      <h3>По предметам</h3>
-
-      ${data.subjects.map(s=>{
-        const st=attendanceStats(s.id);
-        return `
-          <div class="card">
-            <b>${safe(s.name)}</b>
-            <strong>${st.percent}%</strong>
-            <div class="progress">
-              <div style="width:${st.percent}%"></div>
-            </div>
-            <span class="small">
-              Присутствий: ${st.present} ·
-              Пропусков: ${st.absent}
-            </span>
-          </div>
-        `;
-      }).join("")}
-
-      <div class="actions">
-        ${button("Экспорт в Excel (.xlsx)","exportExcel()",true)}
-      </div>
+      ${student ? renderStudentStats(student) :
+        `<p class="notice">${t("chooseStudent")}</p>`}
     `;
+  }
+
+  // СПИСОК ПРОПУСКОВ
+
+  if (page==="absences") {
+    const student=data.students.find(s=>s.id===selectedStudent);
+
+    if (!student) {
+      page="stats";
+      render();
+      return;
+    }
+
+    const records=studentStats(student.id).absences
+      .slice()
+      .sort((a,b)=>
+        a.date.localeCompare(b.date) ||
+        a.number-b.number
+      );
+
+    app.innerHTML=`
+      ${button(t("backToStats"),"backFromAbsences()")}
+
+      <h2>${t("absenceList")}</h2>
+      <p class="muted">${safe(student.full_name)}</p>
+
+      <div class="card">
+        <strong>${records.length}</strong>
+        <span class="muted">${t("absences")}</span>
+      </div>
+
+      ${records.map((r,i)=>`
+        <div class="item absence-item">
+          <span>
+            <b>${t("absenceNumber")} ${i+1}</b>
+            <div class="small">
+              ${safe(r.date.split("-").reverse().join("."))}
+            </div>
+            <div>${safe(r.subject)}</div>
+            <div class="small">${t("number")} ${r.number}</div>
+          </span>
+
+          ${button(
+            t("open"),
+            `openLesson('${r.lessonId}','absences')`
+          )}
+        </div>
+      `).join("") || `
+        <p class="muted">${t("noAbsences")}</p>
+      `}
+    `;
+  }
+
+  // ОТКРЫТОЕ ЗАНЯТИЕ
+
+  if (page==="lesson") {
+    app.innerHTML=lessonView();
   }
 }
 
 // ==========================================
-// 13. ОКНО ЗАНЯТИЯ И ОТМЕТКИ
+// 15. ВЫБОР УЧЕНИКА И СТАТИСТИКА
+// ==========================================
+
+function selectStudent(id) {
+  selectedStudent=id;
+  render();
+}
+
+function renderStudentStats(student) {
+  const st=studentStats(student.id);
+
+  const subjectBlocks=data.subjects.map(subject=>{
+    const stats=studentStats(student.id,subject.id);
+
+    return `
+      <div class="card">
+        <b>${safe(subject.name)}</b>
+        <strong>${stats.percent}%</strong>
+
+        <div class="progress">
+          <div style="width:${stats.percent}%"></div>
+        </div>
+
+        <div class="stat-line">
+          <span>${t("visits")}</span>
+          <b class="present">${stats.present}</b>
+        </div>
+
+        <div class="stat-line">
+          <span>${t("absences")}</span>
+          <b class="absent">${stats.absent}</b>
+        </div>
+
+        <div class="small">${t("marked")}: ${stats.marked}</div>
+      </div>
+    `;
+  }).join("");
+
+  const recordList=records=>records
+    .slice()
+    .sort((a,b)=>b.date.localeCompare(a.date))
+    .map(r=>`
+      <div class="item">
+        <span>
+          <b>${safe(r.subject)}</b>
+          <div class="small">${safe(r.date)} · ${t("number")} ${r.number}</div>
+        </span>
+        ${button(t("open"),`openLesson('${r.lessonId}','stats')`)}
+      </div>
+    `).join("") || `<p class="muted">${t("noMarks")}</p>`;
+
+  return `
+    <h3>${safe(student.full_name)}</h3>
+
+    <div class="cards">
+      <div class="card">
+        <strong>${st.present}</strong>
+        <span class="muted">${t("visits")}</span>
+      </div>
+
+      <div class="card">
+        <strong>${st.absent}</strong>
+        <span class="muted">${t("absences")}</span>
+      </div>
+
+      <div class="card">
+        <strong>${st.percent}%</strong>
+        <span class="muted">${t("percent")}</span>
+      </div>
+
+      <div class="card">
+        <strong>${st.marked}</strong>
+        <span class="muted">${t("marked")}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <b>${t("attendance")}</b>
+      <div class="progress">
+        <div style="width:${st.percent}%"></div>
+      </div>
+      <span class="small">${st.percent}%</span>
+    </div>
+
+    <h3>${t("subjectStats")}</h3>
+    ${subjectBlocks || `<p class="muted">${t("noSubjects")}</p>`}
+
+    <h3>${t("absenceHistory")}</h3>
+
+    <div class="card">
+      <strong>${st.absent}</strong>
+      <span class="muted">${t("absences")}</span>
+
+      <div class="actions">
+        ${button(t("viewAbsences"),"openAbsences()",true)}
+      </div>
+    </div>
+
+    <h3>${t("presenceHistory")}</h3>
+    ${recordList(st.presences)}
+
+    <div class="actions">
+      ${button(t("export"),"exportExcel()",true)}
+    </div>
+  `;
+}
+
+function openAbsences() {
+  if (!selectedStudent) return;
+  page="absences";
+  render();
+}
+
+// ==========================================
+// 16. ОКНО ЗАНЯТИЯ
 // ==========================================
 
 function lessonView() {
   const lesson=data.lessons.find(l=>l.id===selectedLesson);
-  if (!lesson) return "";
 
+  if (!lesson) {
+    page=lessonReturnPage || "history";
+    render();
+    return "";
+  }
+
+  const subject=data.subjects.find(s=>s.id===lesson.subject_id);
   const marks=data.attendance[lesson.id] || {};
 
   return `
-    <div class="card">
-      <h3>Пара №${lesson.lesson_number}</h3>
+    ${button(t("back"),"backFromLesson()")}
 
-      <label>Дата занятия</label>
-      <input type="date" value="${safe(lesson.lesson_date)}"
+    <h2>${safe(subject?.name || "")}</h2>
+
+    <div class="card">
+      <h3>${t("number")} ${lesson.lesson_number}</h3>
+
+      <label>${t("date")}</label>
+      <input type="date"
+        value="${safe(lesson.lesson_date)}"
         onchange="changeDate(this.value)">
 
-      <h3>Отметки учеников</h3>
+      <h3>${t("marks")}</h3>
 
       ${data.students.map((s,i)=>{
         const mark=marks[s.id];
 
-        const label=mark===true ? "Присутствовал" :
-          mark===false ? "Отсутствовал" : "Не отмечен";
+        const label=mark===true ? t("present") :
+          mark===false ? t("absent") : t("unmarked");
 
         return `
           <div class="item">
-            <span>${i+1}. ${safe(s.full_name)}
+            <span>
+              ${i+1}. ${safe(s.full_name)}
               <div class="small ${
                 mark===true?"present":
                 mark===false?"absent":""
               }">${label}</div>
             </span>
 
-            <select
-              style="width:145px;margin:0"
+            <select style="width:145px;margin:0"
               onchange="setAttendance('${s.id}',this.value)">
               <option value="none" ${mark===undefined?"selected":""}>
-                Не отмечен
+                ${t("unmarked")}
               </option>
               <option value="present" ${mark===true?"selected":""}>
-                Был
+                ${t("was")}
               </option>
               <option value="absent" ${mark===false?"selected":""}>
-                Не был
+                ${t("wasNot")}
               </option>
             </select>
           </div>
         `;
-      }).join("") || '<p class="muted">Сначала добавь учеников.</p>'}
+      }).join("") || `<p class="muted">${t("noStudents")}</p>`}
     </div>
   `;
 }
 
 // ==========================================
-// 14. ЗАПУСК
+// 17. ЗАПУСК
 // ==========================================
 
 document.querySelectorAll("nav button[data-page]").forEach(b=>{
@@ -850,12 +1424,22 @@ document.querySelectorAll("nav button[data-page]").forEach(b=>{
 
 db.auth.onAuthStateChange((event,session)=>{
   if (event==="SIGNED_OUT") {
+    data={
+      students:[],
+      subjects:[],
+      lessons:[],
+      attendance:{}
+    };
+
     document.getElementById("journal").classList.add("hidden");
     document.getElementById("auth").classList.remove("hidden");
   }
 });
 
+updateStaticText();
 checkAuth();
+
 </script>
 </body>
 </html>
+```
